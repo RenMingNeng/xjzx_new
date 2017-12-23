@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>用户绑定角色</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+  <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+  <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+  <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+  <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+  <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+  <script type="text/javascript">
+   var param = EasyUIExt.myOpener.param
+    jQuery(function(){
+    	//全部移到右边
+    	$('#add_all').click(function(){
+    		//获取全部的选项,删除并追加给对方
+    		$('#select1 option').appendTo('#select2');
+    	});
+    	//移到右边
+    	$('#add').click(function(){
+    		//先判断是否有选中
+    		if(!$("#select1 option").is(":selected")){			
+    			top.layer.alert('请选择需要移动的选项', {icon: 5,skin: 'layer-ext-moon'})
+    		}
+    		//获取选中的选项，删除并追加给对方
+    		else{
+    			$('#select1 option:selected').appendTo('#select2');
+    		}	
+    	});
+    	//移到左边
+    	$('#remove').click(function(){
+    		//先判断是否有选中
+    		if(!$("#select2 option").is(":selected")){
+    		  top.layer.alert('请选择需要移动的选项', {icon: 5,skin: 'layer-ext-moon'})
+    		}
+    		else{
+    			$('#select2 option:selected').appendTo('#select1');
+    		}
+    	});
+    	//全部移到左边
+    	$('#remove_all').click(function(){
+    		$('#select2 option').appendTo('#select1');
+    	});
+    });
+    function submitForm(){
+       var index = top.layer.load(0, {shade: false}); 
+       var rolesList = [];
+      $("#select2 option").each(function(index,item){
+    	  rolesList.push(item.value);
+      });
+       $.ajax({
+    	 url:"${webPath}/system/user/bindingRoles.htm",
+    	 data:{userid:param.entity.id,rolesids:rolesList.join(",")},
+    	 dataType:"json",
+    	 type:"post",
+    	 success:function(data){
+    		 top.layer.close(index); 
+             if(data.code="success"){
+            	 param.success(EasyUIExt.myOpener.dialog,data);
+    		 }
+    	 }
+       });
+    }
+  </script>
+</head>
+<body>
+    <div class="easyui-layout" data-options="fit:true,border:false">
+      <div data-options="region:'west',border:false" style="width:170px;">
+        <select multiple="multiple" id="select1" style="width: 100%;height: 100%;text-align: center;">
+        <#if nbindRoles??>
+             <#list nbindRoles as roles>
+                 <option value="${roles.id}">${roles.name}</option>
+             </#list>
+        </#if>
+    </select>
+      </div>
+      <div data-options="region:'center',border:true" style="width:20px;" >
+         <div align="center">
+             <div style="padding: 15px;margin-left: -5px;"><a id="add_all" class="easyui-linkbutton"  data-options="plain:false,iconCls:'icon-forward'"></a></div>
+             <div style="padding: 15px;margin-left: -5px;"><a id="add" class="easyui-linkbutton"  data-options="plain:false,iconCls:'icon-next'"></a></div>
+             <div style="padding: 15px;margin-left: -5px;"><a id="remove" class="easyui-linkbutton"  data-options="plain:false,iconCls:'icon-previous'"></a></div>
+             <div style="padding: 15px;margin-left: -5px;"><a id="remove_all" class="easyui-linkbutton"  data-options="plain:false,iconCls:'icon-backward'"></a></div>
+         </div>
+      </div>
+      <div data-options="region:'east',border:false" style="width:170px;">
+         <select multiple="multiple" id="select2" style="width: 100%;height: 100%;text-align: center;">
+            <#if bindRoles??>
+             <#list bindRoles as roles>
+                 <option value="${roles.id}">${roles.name}</option>
+             </#list>
+            </#if>
+         </select>
+      </div>
+      <div data-options="region:'south'"style="height: 38px;" >
+          <div class="dialog-button" >
+	    	  <a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+	  		  <a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+         </div>
+      </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link href="${webPath}/resource/system/css/login_style.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/widgets/showloading/showLoading.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/jquery/MD5.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/showloading/jquery.showLoading.min.js"></script>
+<script type="text/javascript">
+document.onkeydown = function(e){
+    var event = e || window.event;  
+    var code = event.keyCode || event.which || event.charCode;
+    if (code == 13) {
+    	login();
+    }
+}
+   function refreshCode() {
+		jQuery("#code_img").attr("src","${webPath}/system/verify.htm?d" + new Date().getTime());
+   }
+   function login(){
+	   if($("#password").val()!=""&&$("#password").val()!="请输入验证码"){
+		  $("#pword").val(MD5($("#password").val()));//md5转码
+		}
+	   $("#login").submit(); 
+	   $(".cjwh_ht_login").showLoading();
+   }
+</script>
+</head>
+
+<body>
+	<div class="cjwh_ht_login">
+    	<div class="cjwh_ht_tit">湖北省安全生产宣传教育中心</div>
+        <div class="cjwh_ht_list">
+        <form action="${webPath}/system/security_check.htm" method="post" id="login">
+            <input type="hidden" name="password" id="pword"/>
+        	<ul>
+            	<li><input class="input_name" type="text" name="username" id="username" value="<#if Session.loginMesage??>${Session.loginMesage.userName!'请输入用户名'}<#else>请输入用户名</#if>" onfocus="if (value =='请输入用户名'){value =''}" onblur="if (value ==''){value='请输入用户名'}"/></li>
+				<li><input class="input_psw" type="password" id="password" value="请输入密码" onfocus="if (value =='请输入密码'){value =''}" onblur="if (value ==''){value='请输入密码'}"//></li> 
+            	<li>
+                <input class="input_yzm" type="text" name="validation" id="vidCode" value="请输入验证码" onfocus="if (value =='请输入验证码'){value =''}" onblur="if (value ==''){value='请输入验证码'}"/>
+                <img src="${webPath}/system/verify.htm" id="code_img" onclick="refreshCode();"/><a href="javascript:refreshCode();">换一换</a>
+                </li>
+                <li class="list_but"><a href="javascript:login();">登录</a></li>
+                <li><#if parameter??><div class="msg-warn">该账号已失效,请您重新登陆!</div><#else><#if SPRING_SECURITY_LAST_EXCEPTION??><div class="msg-warn">${SPRING_SECURITY_LAST_EXCEPTION.message}</div></#if></#if></li>
+            </ul>
+          </form>
+        </div>
+    </div>
+    <div class="cjwh_ht_more">湖北省安全生产宣传教育中心</div>
+</body>
+</html>

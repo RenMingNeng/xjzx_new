@@ -1,0 +1,24 @@
+.swicth-wrap {float:left; position:relative; width:312px; height:243px; z-index:1; overflow:hidden;}
+.switch-con {position:absolute; top:0px; left:0px; z-index:2;overflow:hidden}
+.swich-btn {width:50px; color:#7a7979; z-index:3; position:absolute; cursor:pointer; height:50px; background:#ccc; line-height:50px; text-align:center; top:80px; background:url(../images/btn_ahpa_bg.png) repeat; font-size:30px}
+.swich-btn:hover{ background:url(../images/btn_ahpa_bg_hover.png) repeat; color:#fff}
+#btn_l{left:0px;}
+#btn_r{right:0px;}
+.switch-con div{float:left;width:312px; height:243px; position:relative}
+
+
+/** 鑷畾涔�寮�**/
+.switch-con div img{ width:312px; height:210px; display:block}
+.switch-con div p{ position:absolute; background:url(../images/btn_ahpa_bg_dark.png) repeat; height:40px; width:100%; bottom:30px; line-height:40px; color:#fff; padding-left:10px}
+.swich-ul-indicator li{ float:left; display:inline-block; cursor:pointer}
+.swich-ul-indicator{ margin:0px; padding:0px; position:absolute; bottom:5px; z-index:999; left:110px;}
+.swich-ul-indicator .indicator-selected{ background:#e9654b}
+.swich-ul-indicator li span{ width: 28px; height:5px; background:#ccc; display:inline-block; margin-left:5px;}
+
+
+
+
+/** 漂浮二维码**/
+.sub{ width:150px; background:#FC6; float:right;}
+.fixed{ width:150px; height:175px; background:#F66; font:normal 13px/30px \5FAE\8F6F\96C5\9ED1; text-align:center; top:10px;}
+.attention{ border:1px solid #f1f1f1; width:150px; height:170px; position: fixed; right:20px; top:95px;}

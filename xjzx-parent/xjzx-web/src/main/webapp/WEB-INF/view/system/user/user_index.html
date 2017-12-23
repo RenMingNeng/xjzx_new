@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户管理</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+      $(function(){
+    	  jQuery("#userTb").datagrid({
+  			    border:false,
+				toolbar:"#toolBar",
+				striped : true,
+				fit:true,
+				pageList:[1,5,10,15,20],
+				pagination:true,
+				rownumbers:true,
+				singleSelect:true,
+				columns:[[
+					{field:'number',title:'用户编号',width:80,sortable:true,align:'center'},
+					{field:'name',title:'登陆名',width:80,sortable:true,align:'center'},
+				    {field:'uname',title:'姓名',width:120,sortable:true,align:'center'},
+				    {field:'reRoles',title:'当前角色',width:120,sortable:true,align:'center',formatter:getRoles},
+				    {field:'lasttime',title:'最后一次进入系统时间',width:180,sortable:true,align:'center',formatter:EasyUIExt.formateDateTime},
+				    {field:'addTime',title:'新增日期',width:100,sortable:true,align:'center',formatter:EasyUIExt.formateDateTime}
+				]],
+				onLoadSuccess:function(){
+					jQuery(this).datagrid("unselectAll");
+				},
+				loadFilter:function(data){
+					data.data.rows = data.data.data;
+					return data.data;
+				}
+  		});
+    	  query();
+      });
+      function query(){
+    	  var queryParam = {};
+    	 jQuery("#userTb").datagrid("options").url = "${webPath}/system/user/findUserJson.htm";
+    	 if($("#txtCode").val()!=""){
+    		 queryParam.number = $("#txtCode").val(); 
+    	 }if($("#txtValue").val()!=""){
+    		 queryParam.uname = $("#txtValue").val();
+    	 }
+    	 $("#userTb").datagrid("load", queryParam);
+      }
+      function getRoles(roles){
+    	  var names =[];
+    	 for(var i in roles){
+    		 names.push(roles[i].name);
+    	 }
+    	 return names.join(",");
+      }
+      function addUser(){
+     		EasyUIExt.iframeDialog({
+  			url:'${webPath}/system/user/userEdit.htm',
+  			width:400,
+  			height:300,
+  			title:"新增-用户",
+  			param:{
+  				type:"add",
+  				success : function(dialog,data){
+  					var icon = data.code=="success"?1:2;
+  				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+  					jQuery("#userTb").datagrid("reload");
+  					dialog.dialog("close");
+  				}
+  			}
+  		}); 
+       }
+    function updateUser(){
+  		var selected = jQuery("#userTb").datagrid("getSelections");
+  		if(selected.length != 1){
+  			top.$.messager.alert("提示信息","请选择一条数据进行操作！");
+  			return;
+  		}
+  		EasyUIExt.iframeDialog({
+  			url:'${webPath}/system/user/userEdit.htm',
+  			width:400,
+  			height:300,
+  			title:"修改-用户",
+  			param:{
+  				type:"update",
+  				organization:selected[0].organization,
+  				entity:selected[0],
+  				success : function(dialog,data){
+  					var icon = data.code=="success"?1:2;
+  				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+  					jQuery("#userTb").datagrid("reload");
+  					dialog.dialog("close");
+  				}
+  			}
+  		}); 
+    }
+    //修改密码
+    function updateUserPassword(){
+  		var selected = jQuery("#userTb").datagrid("getSelections");
+  		if(selected.length != 1){
+  			top.$.messager.alert("提示信息","请选择一条数据进行操作！");
+  			return;
+  		}
+  		EasyUIExt.iframeDialog({
+  			url:'${webPath}/system/user/userPassword.htm',
+  			width:400,
+  			height:300,
+  			title:"修改-用户密码",
+  			param:{
+  				type:"update",
+  				organization:selected[0].organization,
+  				entity:selected[0],
+  				success : function(dialog,data){
+  					var icon = data.code=="success"?1:2;
+  				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+  					jQuery("#userTb").datagrid("reload");
+  					dialog.dialog("close");
+  				}
+  			}
+  		});
+    }
+    function delUser(){
+  	 var selected = $("#userTb").datagrid("getSelections");
+  		if(selected.length == 0){
+  			top.$.messager.alert("提示信息","请选择数据！");
+  			return;
+  		}
+  		var idlist = [];
+  		for(var i=0,len=selected.length;i<len;i++){
+  			idlist.push(selected[i].id);
+  		}
+   	top.$.messager.confirm("提示信息","是否确定删除？",function(r){
+   			if(r){
+  			   jQuery.ajax({
+  		   			url : "${webPath}/system/user/deleteUser.htm",
+  		   			dataType : "json",
+  		   			type:"post",
+  		   			data:{
+  		   				ids:idlist.join(",")
+  		   			},
+  		   			success:function(data){
+  		   				var icon = data.code=="success"?1:2;
+  					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+  					 	jQuery("#userTb").datagrid("reload");
+  		   			}
+  		   	   });
+   		  }
+   	   });
+    }
+    function bindRoles(){
+     var selected = jQuery("#userTb").datagrid("getSelections");
+  	if(selected.length != 1){
+  		top.$.messager.alert("提示信息","请选择一条数据进行操作！");
+  		return;
+  	}
+  	EasyUIExt.iframeDialog({
+  		url:'${webPath}/system/user/bindRoles.htm?userid='+selected[0].id,
+  		width:400,
+  		height:300,
+  		title:"绑定角色",
+  		param:{
+  			type:"bindRoles",
+  			entity:selected[0],
+  			success : function(dialog,data){
+  				var icon = data.code=="success"?1:2;
+  			 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+  				jQuery("#userTb").datagrid("reload");
+  				dialog.dialog("close");
+  			}
+  		}
+  	});
+    }
+    function resetQuery(){
+    	 $("#txtCode").val("");
+    	 $("#txtValue").val("");
+    	 query();
+    }
+    </script>
+</head>
+<body>
+   <div class="easyui-layout" data-options="fit:true,border:false">
+       <div data-options="region:'center'">
+         <table id="userTb"></table>
+       </div>
+       <div id="toolBar" class="search-toolbar">
+  			<table>
+				<tr>
+					<td class="search-label" style="width: 65px;">用户编号</td>
+					<td class="search-input"><input style="width: 95px;" id="txtCode" type="text"/></td>
+					<td class="search-label" style="width: 55px;">员工姓名</td>
+					<td class="search-input"><input style="width: 95px;" id="txtValue" type="text"/></td>
+					<td><a onclick="query();" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:false">查询</a>
+					<a onclick="resetQuery();" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+				</tr>
+	  		</table>
+	  		<div>
+	  			<a onclick="addUser();" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+	  			<a onclick="updateUser();" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
+	  			<a onclick="delUser();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
+	  				<a onclick="updateUserPassword();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">修改密码</a>
+	  			<a onclick="bindRoles();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">绑定角色</a>
+  			</div>
+  		</div>
+   </div>
+</body>
+</html>

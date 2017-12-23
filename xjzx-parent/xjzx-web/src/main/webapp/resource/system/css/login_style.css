@@ -1,0 +1,115 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	margin:0;
+	padding:0;
+	background:#EBE2DA;
+	font-family:"微软雅黑";
+	height:100%;
+}
+ul,li{
+	list-style:none;
+	padding:0;
+	margin:0;
+}
+img{
+	border:none;
+}
+.cjwh_ht_login{
+	background:url(../img/20160331150302.jpg) no-repeat 90px 110px #E0E0E0;
+	width:500px;
+	height:250px;
+	margin:auto;
+	margin-top:120px;
+	border:1px solid #ccc;
+	padding:50px;
+}
+.cjwh_ht_login .cjwh_ht_tit{
+	width:500px;
+	text-align:center;
+	margin-bottom:20px;
+	height:36px;
+	line-height:36px;
+	color:#b8b8b8;
+	font-size:30px;
+	letter-spacing:5px;
+}
+.cjwh_ht_login .cjwh_ht_list{
+	width:350px;
+	height:160px;
+	float:right;
+}
+.cjwh_ht_login .cjwh_ht_list li{
+	display:block;
+	width:350px;
+	margin:0 0 10px 0;
+	float:left;
+}
+.cjwh_ht_login .cjwh_ht_list input{
+	width:275px;
+	line-height:30px;
+	height:30px;
+	float:left;
+	background:#fff;
+	border:none;
+}
+.cjwh_ht_login .cjwh_ht_list li img{
+	width:80px;
+	height:30px;
+	margin-left:10px;
+	border:none;
+	float:left;
+}
+.cjwh_ht_login .cjwh_ht_list li a{
+	width:80px;
+	height:30px;
+	line-height:30px;
+	margin-left:10px;
+	text-decoration:none;
+	color:#515151;
+}
+.cjwh_ht_login .cjwh_ht_list .list_but a{
+	width:320px;
+	display:block;
+	margin:0;
+	padding:0;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	background:#fff;
+	color:#c30;
+}
+.cjwh_ht_login .cjwh_ht_list .list_but a:hover{
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	background:#838383;
+	color:#fff;
+}
+.cjwh_ht_login .cjwh_ht_list .input_name{
+	background:url(../img/20160331151141.jpg) no-repeat left #fff;
+	padding-left:40px;
+
+}
+.cjwh_ht_login .cjwh_ht_list .input_psw{
+	background:url(../img/20160331151201.jpg) no-repeat 3px #fff;
+	padding-left:40px;
+}
+.cjwh_ht_login .cjwh_ht_list .input_yzm{
+	width:120px;
+	background:url(../img/20160331153331.jpg) no-repeat 3px #fff;
+	padding-left:40px;
+}
+.cjwh_ht_more{
+	width:600px;
+	height:42px;
+	line-height:42px;
+	margin:auto;
+	color:#838383;
+}
+.msg-warn{
+	border: solid 1px red;
+	width: 320px;
+	text-align: center;
+	color: red;
+}

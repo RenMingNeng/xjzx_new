@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>角色明细</title>
+<link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+       var param = EasyUIExt.myOpener.param;
+       jQuery(function(){
+    	   EasyUIExt.initForm(param);
+    	   var url = "${webPath}/system/roles/addRoles.htm";
+    	   if(param.type=="update"){
+    		   url = "${webPath}/system/roles/updateRoles.htm";
+    	   }
+    	   jQuery("#myForm").form({
+   			url : url,
+			dataType:"json",
+			onSubmit:function(){
+				index = top.layer.load(1, {
+				    shade: [0.5,'#000'] //0.1透明度的白色背景
+				});
+			},
+			success:function(data){
+				top.layer.close(index);
+				var data = eval('(' + data + ')');
+				if(data.code=="success"){
+					top.layer.alert(data.msg, {icon: 1,skin: 'layer-ext-moon'});
+					param.success(EasyUIExt.myOpener.dialog,data);
+				}else{
+					top.layer.alert(data.msg, {icon: 2,skin: 'layer-ext-moon'});
+				}
+		    } 
+		});
+		$("#myForm").form("disableValidation");
+		$("#myForm").form("enableValidation");
+       });
+       function submitForm(){
+    	   if(jQuery("#myForm").form("validate")){
+    		   jQuery("#myForm").submit();
+			}
+       }
+       
+    </script>
+</head>
+<body>
+   	<form id="myForm" method="post">
+  	 <input id="form-id" type="hidden" name="id" value="0"/>
+  	 <input id="form-addTime" type="hidden" name="addTime" value="1900-01-01 00:00:00"/>
+  	 <table class="form-table">
+  	 	<tr>
+  	 		<td class="form-label">角色Key</td>
+  	 		<td class="form-input">
+  	 			<input id="form-roleKey" name="roleKey" class="easyui-validatebox" data-options="required:true,validType:'upperCase'" style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">角色名称</td>
+  	 		<td class="form-input">
+  	 			<input id="form-name" class="easyui-validatebox" name="name" data-options="required:true" style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">描述</td>
+  	 		<td class="form-input">
+  	 		    <textarea id="form-mark" rows="" cols="" name="mark"></textarea>
+  	 		</td>
+  	 	</tr>
+  	 </table>
+ 	 </form>
+ 	<div class="dialog-button">
+   	<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+ 		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+   </div>
+</body>
+</html>

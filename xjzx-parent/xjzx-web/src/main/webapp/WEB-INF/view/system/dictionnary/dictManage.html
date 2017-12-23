@@ -1,0 +1,306 @@
+<!DOCTYPE HTML >
+<html>
+  <head>
+    <title>数据字典管理</title>
+	
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+    <script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript">
+    	var Q = jQuery;
+    	var selectedNode = null;
+    	var targetNode = null;
+    	Q(function(){
+    		//数据字典树
+    		Q("#dictTree").tree({
+    			url : "${webPath}/system/dictionary/getUnsyncTree.htm",
+				onBeforeLoad : function(node) {
+					if (node) {
+						Q("#dictTree").tree("options").url = "${webPath}/system/dictionary/getUnsyncTree.htm?code=" + node.attributes.dictCode;
+					}
+				},
+				loadFilter : function(data) {
+					if (data.code == "success") {
+						return data.data;
+					} else {
+						return [];
+					}
+				},
+				onContextMenu : function(e, node) {
+					e.preventDefault();
+					targetNode = node;
+					// 显示快捷菜单
+					Q('#contextmenu').menu('show', {
+						left : e.pageX,
+						top : e.pageY
+					});
+				},
+				onClick : function(node) {
+					selectedNode = node;
+					queryDictValue();
+				}
+			});
+    		Q("#dictTb").datagrid({
+    			border:false,
+				toolbar:"#toolBar",
+				striped : true,
+				fit:true,
+				pageList:[1,5,10,15,20],
+				pagination:true,
+				rownumbers:true,
+				columns:[[ 
+					{field:"checkbox",checkbox:true},
+					{field:'dictName',title:'字典名称',width:120,sortable:true,align:'center'},
+					{field:'dictCode',title:'字典代码',width:120,sortable:true,align:'center'},
+				    {field:'dictValue',title:'值',width:120,sortable:true,align:'center'},
+			        {field:'others',title:'备注信息',width:180,sortable:true,align:'center'},
+				    {field:'addTime',title:'新增日期',width:150,sortable:true,align:'center',formatter:EasyUIExt.formateDateTime}
+				]],
+				onLoadSuccess:function(){
+					Q(this).datagrid("unselectAll");
+				},
+				loadFilter:function(data){
+					data.data.rows = data.data.data;
+					return data.data;
+				}
+    		});
+    	
+    	});
+    	function queryDictValue(){
+    		if(selectedNode==null || selectedNode.id==0){
+    			return;
+			}
+    		Q("#dictTb").datagrid("options").url = "${webPath}/system/dictionary/getPage.htm?dictType=l&parent.dictCode="+selectedNode.attributes.dictCode;
+    		var queryParam = {};
+			if ($("#txtCode").val()) {
+				queryParam.dictCode = $("#txtCode").val();
+			}
+			if ($("#txtValue").val()) {
+				queryParam.dictValue = $("#txtValue").val();
+			}
+			$("#dictTb").datagrid("load", queryParam);
+    	}
+    	function resetQuery(){
+    		$("#txtCode").val("");
+    		$("#txtValue").val("");
+    		queryDictValue();
+    	}
+    	function addDict(){
+    		if(selectedNode==null){
+    			top.$.messager.alert("提示信息","请选择字典分类！");
+    			return;
+    		}
+    		if(selectedNode.id==0){
+    			top.$.messager.alert("提示信息","无法在根目录中添加字典值！");
+    			return;
+    		}
+    		EasyUIExt.iframeDialog({
+				url: '${webPath}/system/dictionary/dictSave.htm?dictPid='+selectedNode.id,
+				width:400,
+				height:350,
+				title:"新增字典",
+				param:{
+					type:"add",
+					entity:{
+						dictType:"l",
+						parent:selectedNode.attributes
+					},
+					success : function(dialog,data){
+						var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+						Q("#dictTb").datagrid("reload");
+						dialog.dialog("close");
+					}
+				}
+			});
+    	}
+    	function updateDict(){
+    		var selected = Q("#dictTb").datagrid("getSelections");
+    		if(selected.length != 1){
+    			$.messager.alert("提示信息","请选择一条数据进行操作！");
+    			return;
+    		}
+    		selected[0].parent = selectedNode.attributes;
+    		EasyUIExt.iframeDialog({
+				url:'${webPath}/system/dictionary/dictModify.htm?dictPid='+selectedNode.attributes.id,
+				width:400,
+				height:350,
+				title:"修改字典",
+				param:{
+					entity:selected[0],
+					type:"update",
+					success : function(dialog,data){
+						var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+						Q("#dictTb").datagrid("reload");
+						dialog.dialog("close");
+					}
+				}
+			});
+    	}
+    	
+    	function deleteDict(){
+    		var selected = Q("#dictTb").datagrid("getSelections");
+    		if(selected.length == 0){
+    			$.messager.alert("提示信息","请选择数据！");
+    			return;
+    		}
+    		var idlist = [];
+    		for(var i=0,len=selected.length;i<len;i++){
+    			idlist.push(selected[i].id);
+    		}
+    		top.$.messager.confirm("提示信息","是否确定删除？",function(r){
+    			if(r){
+    				Q.ajax({
+		    			url : "${webPath}/system/dictionary/deleteDict.htm",
+		    			dataType : "json",
+		    			type:"post",
+		    			data:{
+		    				ids:idlist.join(",")
+		    			},
+		    			success:function(data){
+		    				var icon = data.code=="success"?1:2;
+						 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+		    				if(data.code=="success"){
+		    					Q("#dictTb").datagrid("reload");
+		    				}
+		    			}
+		    		});
+    			}
+    		});
+    	}
+    	
+    	function addDir(type){
+    		var parent;
+    		if(type == 0){
+    			parent = Q("#dictTree").tree("getRoot").attributes;
+    		}else{
+    			parent = targetNode.attributes;
+    		}
+    		EasyUIExt.iframeDialog({
+				url:'${webPath}/system/dictionary/dictEdit.htm',
+				width:400,
+				height:319,
+				title:"新增字典分类",
+				param:{
+					type:"add",
+					entity:{
+						dictType:"t",
+						parent:parent
+					},
+					success : function(dialog,data){
+						var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+						if(targetNode.id==0){
+							$("#dictTree").tree("options").url = "${webPath}/system/dictionary/getUnsyncTree.htm";
+							$("#dictTree").tree("reload");
+						}else{
+							$("#dictTree").tree("reload",targetNode.target);
+						}
+						dialog.dialog("close");
+					}
+				}
+			});
+    	}
+    	
+    	function updateDir(){
+    		var entity = targetNode.attributes;
+    		entity.parent = Q("#dictTree").tree("getParent",targetNode.target).attributes;
+    		EasyUIExt.iframeDialog({
+				url:'${webPath}/system/dictionary/dictEdit.htm',
+				width:400,
+				height:319,
+				title:"修改字典分类",
+				param:{
+					entity:entity,
+					type:"update",
+					success : function(dialog,data){
+						var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+						var parentNode = $("#dictTree").tree("getParent",targetNode.target);
+						if(parentNode.id != 0){
+							$("#dictTree").tree("reload",parentNode.target);
+						}else{
+							$("#dictTree").tree("options").url = "${webPath}/system/dictionary/getUnsyncTree.htm";
+							$("#dictTree").tree("reload");
+						}
+						dialog.dialog("close");
+					}
+				}
+			});
+    	}
+    	function delDir(){
+    		if(targetNode.id==0){
+    			top.Q.messager.alert("提示信息","无法删除根节点！");
+    			return;
+    		}
+    		top.$.messager.confirm("提示信息","是否确定删除？",function(r){
+    			if(r){
+    				Q.ajax({
+		    			url : "${webPath}/system/dictionary/delete.htm",
+		    			dataType : "json",
+		    			type:"post",
+		    			data:{
+		    				ids:targetNode.id
+		    			},
+		    			success:function(data){
+		    				var icon = data.code=="success"?1:2;
+						 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+		    				if(data.code=="success"){
+		    					var parentNode = $("#dictTree").tree("getParent",targetNode.target);
+		    					if(parentNode.id != 0){
+									$("#dictTree").tree("reload",parentNode.target);
+								}else{
+									$("#dictTree").tree("options").url = "${webPath}/system/dictionary/getUnsyncTree.htm";
+									$("#dictTree").tree("reload");
+								}
+		    				}
+		    			}
+		    		});
+    			}
+    		});
+    	}
+    </script>
+  </head>
+  
+  <body>
+  	<div class="easyui-layout" data-options="fit:true,border:false">
+  		<div data-options="region:'west',title:'数据分类',border:false,split:true" style="width: 200px;">
+  			<ul id="dictTree"></ul>
+  		</div>
+  		<div data-options="region:'center',title:'数据字典',border:false">
+  			<table id="dictTb"></table>
+  		</div>
+  		<div id="toolBar" class="search-toolbar">
+  			<table>
+				<tr>
+					<td class="search-label" style="width: 55px;">字典代码</td>
+					<td class="search-input"><input style="width: 95px;" id="txtCode" type="text"/></td>
+					<td class="search-label" style="width: 55px;">字典值</td>
+					<td class="search-input"><input style="width: 95px;" id="txtValue" type="text"/></td>
+					<td><a onclick="queryDictValue();" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:false">查询</a>
+					<a onclick="resetQuery();" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+				</tr>
+	  		</table>
+	  		<div>
+	  			<a onclick="addDict();" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+	  			<a onclick="updateDict();" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
+	  			<a onclick="deleteDict();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
+  			</div>
+  		</div>
+  		
+  		<div id="contextmenu" class="easyui-menu" style="width:120px;">   
+		    <div onclick="addDir(1);" data-options="iconCls:'icon-add'">新增子分类</div>
+		    <div onclick="updateDir();" data-options="iconCls:'icon-edit'">修改</div>
+		    <div onclick="delDir();" data-options="iconCls:'icon-remove'">删除</div>
+		</div>  
+  	</div>
+  </body>
+</html>

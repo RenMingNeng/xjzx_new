@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>组织架构管理</title>
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+    <script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+	<script type="text/javascript">
+		var selectedNode;
+	     jQuery(function(){
+	    	 jQuery("#oganizationTree").tree({
+	    			url : "${webPath}/system/organization/getOrganizationTree.htm?isseif=false",
+					onBeforeLoad : function(node) {
+						if (node) {
+							jQuery("#oganizationTree").tree("options").url = "${webPath}/system/organization/getOrganizationTree.htm?pid=" + node.attributes.id;
+						}
+					},
+					loadFilter : function(data) {
+						if (data.code == "success") {
+							return data.data;
+						} else {
+							return [];
+						}
+					},
+					onContextMenu : function(e, node) {
+						e.preventDefault();
+						targetNode = node;
+						//显示快捷菜单
+						jQuery('#contextmenu').menu('show', {
+							left : e.pageX,
+							top : e.pageY
+						});
+					},
+					onClick : function(node) {
+						selectedNode = node;
+						queryDictValue();
+					}
+				}); 
+	    	 jQuery("#userTb").datagrid({
+	    			border:false,
+					toolbar:"#toolBar",
+					striped : true,
+					fit:true,
+					pageList:[1,5,10,15,20],
+					pagination:true,
+					rownumbers:true,
+					columns:[[ 
+						{field:"checkbox",checkbox:true},
+						{field:'name',title:'登录名称',width:120,sortable:true,align:'center'},
+						{field:'uname',title:'姓名',width:120,sortable:true,align:'center'},
+					    {field:'mark',title:'备注信息',width:300,sortable:true,align:'center'},
+					    {field:'addTime',title:'新增日期',width:250,sortable:true,align:'center',formatter:EasyUIExt.formateDateTime}
+					]],
+					onLoadSuccess:function(){
+						jQuery(this).datagrid("unselectAll");
+					},
+					loadFilter:function(data){
+						data.data.rows = data.data.data;
+						return data.data;
+					}
+	    		});
+	     });
+	  function addOrgan(type){
+			var parentOrgan;
+    		if(type == 0){
+    			parentOrgan = jQuery("#oganizationTree").tree("getRoot").attributes;
+    		}else{
+    			parentOrgan = targetNode.attributes;
+    		}
+    		EasyUIExt.iframeDialog({
+				url:'${webPath}/system/organization/organizationEdit.htm',
+				width:400,
+				height:320,
+				title:"新增-组织架构",
+				param:{
+					type:"add",
+					entity:{
+						parentOrgan:parentOrgan,
+						level:targetNode.attributes.level
+					},
+					success : function(dialog,data){
+						var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+					 	if(data.code!='flag'){
+					 		if(targetNode.id==0){
+								$("#oganizationTree").tree("options").url = "${webPath}/system/organization/getOrganizationTree.htm";
+								$("#oganizationTree").tree("reload");
+							}else{
+								$("#oganizationTree").tree("reload",targetNode.target);
+							}
+					 		dialog.dialog("close");
+					 	}
+					}
+				}
+			});
+	  }
+	  function queryDictValue(){
+  		if(selectedNode==null || selectedNode.id==0){
+  			return;
+		 }
+  		jQuery("#userTb").datagrid("options").url = "${webPath}/system/user/getUserPage.htm?organId="+selectedNode.attributes.id;
+  		var queryParam = {};
+			if ($("#txtCode").val()) {
+				queryParam.name = $("#txtCode").val();
+			}
+			if ($("#txtValue").val()) {
+				queryParam.uname = $("#txtValue").val();
+			}
+			$("#userTb").datagrid("load", queryParam);
+  	}
+	  function updateOrgan(){
+		var entity = targetNode.attributes;
+  		entity.parentOrgan = jQuery("#oganizationTree").tree("getParent",targetNode.target).attributes;
+  		EasyUIExt.iframeDialog({
+				url:'${webPath}/system/organization/organizationEdit.htm',
+				width:400,
+				height:320,
+				title:"修改组织架构",
+				param:{
+					entity:entity,
+					type:"update",
+					success : function(dialog,data){
+						var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+						var parentNode = $("#oganizationTree").tree("getParent",targetNode.target);
+						if(data.code!='flag'){
+							if(parentNode.id != 0){
+								$("#oganizationTree").tree("reload",parentNode.target);
+							}else{
+								$("#oganizationTree").tree("options").url = "${webPath}/system/organization/getOrganizationTree.htm";
+								$("#oganizationTree").tree("reload");
+							}
+							dialog.dialog("close");
+					 }
+				  }
+				}
+			});
+	  }
+	  function delOrgan(){
+			if(targetNode.id==0){
+    			top.Q.messager.alert("提示信息","无法删除根节点！");
+    			return;
+    		}
+    		top.$.messager.confirm("提示信息","是否确定删除？",function(r){
+    			if(r){
+    				jQuery.ajax({
+		    			url : "${webPath}/system/organization/deleteOrganization.htm",
+		    			dataType : "json",
+		    			type:"post",
+		    			data:{
+		    				ids:targetNode.id
+		    			},
+		    			success:function(data){
+		    				var icon = data.code=="success"?1:2;
+						 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+		    				if(data.code=="success"){
+		    					var parentNode = $("#oganizationTree").tree("getParent",targetNode.target);
+		    					if(parentNode.id != 0){
+									$("#oganizationTree").tree("reload",parentNode.target);
+								}else{
+									$("#oganizationTree").tree("options").url = "${webPath}/system/organizationy/getOrganizationTree.htm";
+									
+									$("#oganizationTree").tree("reload");
+								}
+		    				}
+		    			}
+		    		});
+    			}
+    		});
+		  }
+	  
+     function addUser(){
+   		if(selectedNode==null){
+   			top.$.messager.alert("提示信息","请选择组织架构！");
+   			return;
+   		}
+   		if(selectedNode.id==0){
+   			top.$.messager.alert("提示信息","无法在根目录中添加组织架构值！");
+   			return;
+   		}
+   		EasyUIExt.iframeDialog({
+			url:'${webPath}/system/user/userEdit.htm',
+			width:400,
+			height:300,
+			title:"新增-用户",
+			param:{
+				type:"add",
+				organization:selectedNode.attributes,
+				success : function(dialog,data){
+					var icon = data.code=="success"?1:2;
+				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+					jQuery("#userTb").datagrid("reload");
+					dialog.dialog("close");
+				}
+			}
+		}); 
+     }
+  function updateUser(){
+		var selected = jQuery("#userTb").datagrid("getSelections");
+		if(selected.length != 1){
+			top.$.messager.alert("提示信息","请选择一条数据进行操作！");
+			return;
+		}
+		EasyUIExt.iframeDialog({
+			url:'${webPath}/system/user/userEdit.htm',
+			width:400,
+			height:300,
+			title:"修改-用户",
+			param:{
+				type:"update",
+				organization:selected[0].organization,
+				entity:selected[0],
+				success : function(dialog,data){
+					var icon = data.code=="success"?1:2;
+				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+					jQuery("#userTb").datagrid("reload");
+					dialog.dialog("close");
+				}
+			}
+		}); 
+  }
+  //修改密码
+  function updateUserPassword(){
+		var selected = jQuery("#userTb").datagrid("getSelections");
+		if(selected.length != 1){
+			top.$.messager.alert("提示信息","请选择一条数据进行操作！");
+			return;
+		}
+		EasyUIExt.iframeDialog({
+			url:'${webPath}/system/user/userPassword.htm',
+			width:400,
+			height:300,
+			title:"修改-用户密码",
+			param:{
+				type:"update",
+				organization:selected[0].organization,
+				entity:selected[0],
+				success : function(dialog,data){
+					var icon = data.code=="success"?1:2;
+				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+					jQuery("#userTb").datagrid("reload");
+					dialog.dialog("close");
+				}
+			}
+		});
+  }
+  function deleteUser(){
+	 var selected = $("#userTb").datagrid("getSelections");
+		if(selected.length == 0){
+			top.$.messager.alert("提示信息","请选择数据！");
+			return;
+		}
+		var idlist = [];
+		for(var i=0,len=selected.length;i<len;i++){
+			idlist.push(selected[i].id);
+		}
+		var res = idlist.indexOf(1);
+  		if(res == 0){
+  			$.messager.alert("提示信息","禁止删除超管！");
+  			return;
+  		}
+ 	top.$.messager.confirm("提示信息","是否确定删除？",function(r){
+ 			if(r){
+			   jQuery.ajax({
+		   			url : "${webPath}/system/user/deleteUser.htm",
+		   			dataType : "json",
+		   			type:"post",
+		   			data:{
+		   				ids:idlist.join(",")
+		   			},
+		   			success:function(data){
+		   				var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+					 	jQuery("#userTb").datagrid("reload");
+		   			}
+		   	   });
+ 		  }
+ 	   });
+  }
+  function bindRoles(){
+   var selected = jQuery("#userTb").datagrid("getSelections");
+	if(selected.length != 1){
+		top.$.messager.alert("提示信息","请选择一条数据进行操作！");
+		return;
+	}
+	var res = selected[0];
+	if(res.id == 1){
+		$.messager.alert("提示信息","禁止操作超管！");
+		return;
+	}
+	EasyUIExt.iframeDialog({
+		url:'${webPath}/system/user/bindRoles.htm?userid='+selected[0].id,
+		width:400,
+		height:300,
+		title:"绑定角色",
+		param:{
+			type:"bindRoles",
+			entity:selected[0],
+			success : function(dialog,data){
+				var icon = data.code=="success"?1:2;
+			 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+				jQuery("#userTb").datagrid("reload");
+				dialog.dialog("close");
+			}
+		}
+	});
+  }
+	</script>
+</head>
+<body>
+  	<div class="easyui-layout" data-options="fit:true,border:false">
+  		<div data-options="region:'west',title:'组织架构',border:false,split:true" style="width: 200px;">
+  			<ul id="oganizationTree"></ul>
+  		</div>
+  		<div data-options="region:'center',title:'管理员列表',border:false">
+  			<table id="userTb"></table>
+  		</div>
+  		<div id="toolBar" class="search-toolbar">
+  			<table>
+				<tr>
+					<td class="search-label" style="width: 55px;">登陆名</td>
+					<td class="search-input"><input style="width: 95px;" id="txtCode" type="text"/></td>
+					<td class="search-label" style="width: 55px;">姓名</td>
+					<td class="search-input"><input style="width: 95px;" id="txtValue" type="text"/></td>
+					<td><a onclick="queryDictValue();" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:false">查询</a>
+					<a onclick="resetQuery();" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+				</tr>
+	  		</table>
+	  		<div>
+	  			<a onclick="addUser();" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+	  			<a onclick="updateUser();" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
+	  			<a onclick="deleteUser();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
+	  			<a onclick="updateUserPassword();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">修改密码</a>
+	  			<a onclick="bindRoles();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">绑定角色</a>
+  			</div>
+  		</div>
+  		
+  		<div id="contextmenu" class="easyui-menu" style="width:120px;">   
+		    <div onclick="addOrgan(1);" data-options="iconCls:'icon-add'">新增子分类</div>
+		    <div onclick="updateOrgan();" data-options="iconCls:'icon-edit'">修改</div>
+		    <div onclick="delOrgan();" data-options="iconCls:'icon-remove'">删除</div>
+		</div>  
+  	</div>
+</html>

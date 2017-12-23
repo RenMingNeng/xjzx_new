@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+         <div class="location">您当前位置：
+         	${dict.dictName}
+         </div>
+          <div class="mgt-10 clear">
+			<div class="fl" style="width:270px;">
+				<img src="${webPath}${dict.others}" class="grayborder" style="width:100%;height:auto;">
+			</div>
+		<div class="fl mgl-10 max-item-box">
+		    <#if (normalPage.rows?exists)&&(normalPage?size>0)>
+		       <div class="news-list-wrap">
+				<ul>
+				    <#list normalPage.rows as normal>
+				        <li>
+				          <a target="_blank" href="${webPath}/normal/edit/${normal.id}.htm">${html.delHTMLTag(normal.title,20)}</a>
+							<span class="time">${normal.time?string('yyyy-MM-dd')}</span>
+							<div class="clear"></div>
+				        </li>
+				    </#list>
+				</ul>			
+			  </div>
+		    </#if>
+			
+		</div>
+	</div>
+	 <div class="index_cen_righ_fy" style="width:auto;text-align:center;">
+         <#if (normalPage.rows?exists)&&(normalPage.rows?size>0)>
+               	<ul class="clear" style="display: inline-block;">
+                   	<li><a href="${webPath}/normal/list/${pid}/1.htm">首页 </a></li>
+                    <li><a href="${webPath}/normal/list/${pid}/${normalPage.before}.htm">上一页</a></li>
+                   	<#list normalPage.pageListStart..normalPage.pageListEnd as i>
+                   	  <li style="<#if page==i>background: #e14730;</#if>"><a href="${webPath}/normal/list/${pid}/${i}.htm" >${i}</a></li>
+                   	</#list>
+                   	<li><a href="${webPath}/normal/list/${pid}/${normalPage.next}.htm">下一页</a></li>
+                    <li><a href="${webPath}/normal/list/${pid}/${normalPage.count_page}.htm">尾页</a></li>
+                </ul>
+                  <#else>
+                  <h1 style="text-align: center;font-size: 24px;">暂时没有数据</h1>
+            </#if>
+        </div>
+     </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>

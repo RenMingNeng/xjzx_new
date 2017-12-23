@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>在线调查管理</title>
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+<script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+<script type="text/javascript">
+	jQuery(function() {
+		jQuery("#questionTb").datagrid({
+			url:'${webPath}/system/question/getQuestionPage.htm',
+			striped : true,
+			fit:true,
+			pageList:[10,15,20,30,50],
+			pagination:true,
+			rownumbers:true,
+			toolbar:"#toolBar",
+			columns:[[
+				  {field:"checkbox",checkbox:true},
+			          {field:'title',title:'调查主题',width:400,sortable:true,align:'left'}, 
+					  {field:'type',title:'调查类型',width:100,sortable:true,align:'center',formatter : function(v) {
+						  if(1 == v){
+							  return "单选";
+						  }else if(2 == v){
+							  return "多选";
+						  }else if(3 == v){
+							  return "简答";
+						  }else{
+			        	  	  return "未知"
+						  }
+						}},
+					  {field:'is_valid',title:'调查显示',width:120,sortable:true,align:'center',formatter : function(v) {
+			        	  return 1 == v?"显示":"不显示";
+					   }},
+					  {field:'back_valid',title:'反馈显示',width:120,sortable:true,align:'center',formatter : function(v) {
+			        	  return 1 == v?"是":"否";
+					   }},
+			          {field:'create_user',title:'创建人',width:150,sortable:true,align:'center'},
+			          {field:'create_time',title:'创建时间',width:150,sortable:true,align:'center'},  
+			          {field:'operate_user',title:'操作人',width:150,sortable:true,align:'center'},
+			          {field:'operate_time',title:'操作时间',width:150,sortable:true,align:'center'}  
+					]],
+			onLoadSuccess:function(){
+				jQuery(this).datagrid("unselectAll");
+			},
+			loadFilter:function(data){
+				data.data.rows = data.data.data;
+				return data.data;
+			}  
+    	});
+	});
+	function queryDictValue() {
+		var queryParam = {};
+		if ($("#txtTitle").val()) {
+			queryParam.title = $("#txtTitle").val();
+		}
+		if ($("#is_valid").val()) {
+			queryParam.is_valid = $("#is_valid").val();
+		}
+		$("#questionTb").datagrid("load", queryParam);
+	}
+	// 新增
+	function addQuestion() {
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/question/loadAddQuestion.htm?',
+			width : 900,
+			height : 680,
+			title : "新增调查",
+			param : {
+				type : "add",
+				success : function(dialog, data) {
+					jQuery("#questionTb").datagrid("reload");
+					dialog.dialog("close");
+				}
+			}
+		});
+	}
+	// 修改
+	function updateQuestion() {
+		var selected = jQuery("#questionTb").datagrid("getSelections");
+		if (selected.length != 1) {
+			layer.msg("请选择一条数据！");
+			return;
+		}
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/question/loadUpdateQuestion.htm?id='+selected[0].id,
+			width : 900,
+			height : 680,
+			title : "调查修改",
+			param : {
+				type : "update",
+				entity : selected[0],
+				success : function(dialog, data) {
+					jQuery("#questionTb").datagrid("reload");
+					dialog.dialog("close");
+				}
+			}
+		});
+	}
+	//删除信息
+	function deleteQuestion() {
+		var selected = $("#questionTb").datagrid("getSelections");
+		if (selected.length == 0) {
+			layer.msg("请选择数据！");
+			return;
+		}
+		var idlist = [];
+		for (var i = 0, len = selected.length; i < len; i++) {
+			idlist.push(selected[i].id);
+		}
+		top.$.messager.confirm("提示信息", "是否确定删除？", function(r) {
+			if (r) {
+				jQuery.ajax({
+					url : "${webPath}/system/question/deleteQuestion.htm",
+					dataType : "json",
+					type : "post",
+					data : {
+						ids : idlist.join(",")
+					},
+					success : function(data) {
+						var icon = data.code == "success" ? 1 : 2;
+						top.layer.alert(data.message, {
+							icon : icon,
+							skin : 'layer-ext-moon'
+						});
+						jQuery("#questionTb").datagrid("reload");
+					}
+				});
+			}
+		});
+	}
+	
+	// 调查统计
+	function countResult(){
+		var selected = $("#questionTb").datagrid("getSelections");
+		if (selected.length != 1) {
+			layer.msg("请选择一条数据！");
+			return;
+		}
+		var id = selected[0].id;
+		var type = selected[0].type;
+		var url = '';
+		if('3' == type){
+			url = '${webPath}/system/question/loadQuestionAnswer.htm?id='+id
+		}else{
+			url = '${webPath}/system/question/loadQuestionResult.htm?id='+id
+		}
+		layer.open({
+			type : 2,
+			title : '调查结果',
+			shadeClose : false,				//true点击遮罩层关闭 
+			shade : 0.3,					//遮罩层背景
+			area : [ '800px', '600px' ],		//弹出层大小
+			content : [url, 'no' ]  //no代表不显示滚动条
+		});
+	}
+	
+function resetQuery(){
+   $("#txtTitle").val("");
+   $("#is_valid").val("");
+	queryDictValue();
+}
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true,border:false">
+		<div data-options="region:'center',title:'调查列表',border:false">
+			<table id="questionTb"></table>
+		</div>
+		<div id="toolBar" class="search-toolbar">
+			<table>
+				<tr>
+					<td class="search-label" style="width: 55px;">调查主题</td>
+					<td class="search-input">
+						<input style="width: 95px;" id="txtTitle" type="text" placeholder="主题名称"/>
+					</td>
+					<td class="search-label" style="width: 55px;">前台显示</td>
+					<td class="search-input">
+						<select id="is_valid">
+							<option value="">-选择-</option>
+							<option value="1">显示</option>
+							<option value="2">不显示</option>
+						</select>
+					</td>
+					<td>
+						<a onclick="queryDictValue();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-search',plain:false">查询</a> 
+						<a onclick="resetQuery();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-undo',plain:false">重置</a>
+					</td>
+				</tr>
+			</table>
+			<div>
+				<a onclick="addQuestion();" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add',plain:true">新增</a>
+				<a onclick="updateQuestion();" class="easyui-linkbutton"
+				data-options="iconCls:'icon-edit',plain:true">修改</a>
+				<a onclick="deleteQuestion();" class="easyui-linkbutton"
+				data-options="iconCls:'icon-remove',plain:true">删除</a> 
+				<a onclick="countResult();" class="easyui-linkbutton"
+				data-options="iconCls:'icon-sum',plain:true">调查结果</a>
+			</div>
+		</div>
+	</div>
+</html>

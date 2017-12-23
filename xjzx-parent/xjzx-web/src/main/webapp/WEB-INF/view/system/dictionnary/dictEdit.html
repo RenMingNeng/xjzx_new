@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>数据字典管理</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+<link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+<script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/jquery/ajaxUpload.js"></script>
+<script type="text/javascript">
+	var Q = jQuery;
+	var param = EasyUIExt.myOpener.param;
+	Q(function() {
+		EasyUIExt.initForm(param);
+		Q("#form-parentId").val(param.entity.parent.id);
+		Q("#form-parentName").val(param.entity.parent.dictName);
+		var url = "${webPath}/system/dictionary/update.htm";
+		if (param.type == "add") {
+			url = "${webPath}/system/dictionary/add.htm";
+		}
+		if(param.type == "update"){
+			$("#form-cover").attr("src",top.baseUrl+param.entity.others)
+			$("#others").attr("value",param.entity.others)
+		}
+		var index;
+		Q("#myForm").form({
+			url : url,
+			onSubmit : function() {
+				index = top.layer.load(1, {
+					shade : [ 0.5, '#000' ]
+				//0.1透明度的白色背景
+				});
+			},
+			success : function(data) {
+				top.layer.close(index);
+				var data = eval('(' + data + ')');
+				param.success(EasyUIExt.myOpener.dialog, data);
+			}
+		});
+		Q("#myForm").form("disableValidation");
+		Q("#myForm").form("enableValidation");
+		
+		//上传主题图片
+		new AjaxUpload("#uploadImg", {
+			action : top.baseUrl +"/system/uploadFile.htm",
+			autoSubmit : true,
+			responseType: "json",
+			name : "docfile",
+			onSubmit : function(file, extension) {
+				if (extension && /^(jpg|jpeg|bmp|gif|png|tif)$/.test(extension)) {
+				} else {
+					$.messager.alert("提示信息","你所选择的文件格式不支持，支持的格式包含jpg|jpeg|bmp|gif|png|tif");
+					return false;
+				}
+				uploadding = top.layer.load(0, {shade: false});
+			},
+			onComplete : function(file, data) {
+				top.layer.close(uploadding);
+			    if(data.code=="success"){
+			    	var cover = top.baseUrl + data.data;
+			    	$("#others").attr("value",data.data);
+			    	$("#form-cover").attr("src",cover);
+			    	top.layer.msg("上传成功！");
+			    }else{
+			    	$.messager.alert("提示信息", "上传失败！");
+			    }
+			}
+		});
+	});
+
+	function submitForm() {
+		if (Q("#myForm").form("validate")) {
+			Q("#myForm").submit();
+		}
+	}
+
+	function selectParent() {
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/dictionary/dictSelect.htm',
+			width : 300,
+			height : 300,
+			title : "选择字典",
+			param : {
+				success : function(dialog, data) {
+					Q("#form-parentId").val(data.attributes.id);
+					Q("#form-parentName").val(data.attributes.dictName);
+					dialog.dialog("close");
+				}
+			}
+		});
+	}
+</script>
+</head>
+
+<body>
+	<form id="myForm" method="post">
+		<input id="form-id" type="hidden" name="id" value="0" /> <input
+			id="form-addTime" type="hidden" name="addTime" value="" /> <input
+			id="form-parentId" type="hidden" name="parent.id" value="0" />
+		<table class="form-table">
+			<tr>
+				<td class="form-label">字典名称</td>
+				<td class="form-input"><input id="form-dictName"
+					name="dictName" style="width: 150px;" /></td>
+			</tr>
+			<tr>
+				<td class="form-label">字典代码</td>
+				<td class="form-input"><input id="form-dictCode"
+					name="dictCode" style="width: 150px;" class="easyui-validatebox"
+					data-options="required:true" /></td>
+			</tr>
+			<tr>
+				<td class="form-label">字典类型</td>
+				<td class="form-input"><select id="form-dictType"
+					name="dictType" style="width: 150px;" class="easyui-combobox"
+					data-options="required:true,panelHeight:'auto',editable:false,readonly:true">
+						<option selected="selected" value="t">字典分类</option>
+						<option value="l">字典值</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td class="form-label">父字典</td>
+				<td class="form-input"><input id="form-parentName"
+					style="width: 150px;" class="easyui-validatebox" data-options=""
+					value="根目录" readonly="readonly" /> <a class="easyui-linkbutton"
+					onclick="selectParent();">选择</a></td>
+			</tr>
+			<#if dictPid=='143'>
+				<tr>
+					<td class="form-label">前台显示</td>
+					<td class="form-input">
+						<select id="form-dictValue" name="dictValue">
+							<option value="1">--是--</option>
+							<option value="0">--否--</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="form-label" rowspan="2">主题图片</td>
+					<td class="form-input" rowspan="2" height="80px;">
+					<img src="${webPath}/resource/system/img/zanwutupian.jpg" id="form-cover" style="width: 180px; height: 80px;" /> 
+					<input type="hidden" name="others" id="others" value="" /> 
+					<a class="easyui-linkbutton" id="uploadImg" style="vertical-align: middle;">上传图片</a>
+					</td>
+				</tr>
+			<#else>
+				<tr>
+					<td class="form-label">值</td>
+					<td class="form-input"><input id="form-dictValue"
+						name="dictValue" style="width: 150px;" class="easyui-validatebox"
+						data-options="" /></td>
+				</tr>
+				<tr>
+					<td class="form-label">备注信息</td>
+					<td class="form-input"><textarea id="form-others" name="others"
+							style="width: 150px; height: 50px;"></textarea></td>
+				</tr>
+			</#if>
+		</table>
+	</form>
+	<div class="dialog-button">
+		<a onclick="submitForm();" class="easyui-linkbutton"
+			href="javascript:void(0);"
+			data-options="plain:false,iconCls:'icon-ok'">确定</a> <a
+			onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton"
+			href="javascript:void(0);"
+			data-options="plain:false,iconCls:'icon-cancel'">取消</a>
+	</div>
+</body>
+</html>

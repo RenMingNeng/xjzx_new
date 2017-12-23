@@ -1,0 +1,11 @@
+.tabbox{ width:370px; overflow:hidden; margin:0 auto;}
+.tab_conbox{border: 1px solid #ee9d8d;border-top: none;}
+.tabs{height: 39px;border-bottom:1px solid #ee9d8d;border-left: 1px solid #ee9d8d;width: 100%;}
+.tabs li{height:38px;line-height:38px;float:left;border:1px solid #ee9d8d;border-left:none;margin-bottom: -1px;background:url(../images/tab-titile-bg.png) repeat-x; overflow: hidden;position: relative;}
+.tabs li a{font-size:13px;display: block;border: 1px solid #fff;outline: none; text-decoration:none; color:#000}
+.tabs li a:hover {background: #ee9d8d;}	
+.tabs .thistab,.tabs .thistab a:hover{background: #fff;border-bottom: 1px solid #fff;}
+.tabs .thistab{border-top:3px solid #ee9d8d; font-weight:bold}
+.tab_con {padding-top:12px;line-height:175%}
+.nav{display: none;}
+.height-245{ height:236px;}

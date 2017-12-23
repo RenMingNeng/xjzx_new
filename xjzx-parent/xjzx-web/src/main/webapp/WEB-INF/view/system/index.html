@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/button.css">
+    <script type="text/javascript" src="${webPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+	<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+	<script type="text/javascript">var baseUrl = '${webPath}';</script>
+   <style type="text/css">
+        .user_info_div{height: 32px;border-radius:16px;background-color: #246AD1;position: absolute;right: 0px;margin-right: 50px;top: 50%;margin-top: -16px;padding: 0 26px;border: 2px solid #84B2F6;overflow: hidden;}
+		.user_info_div>div{float: left;font-size: 14px;line-height: 32px;padding:0 10px;color: white;}
+        .menuDiv>div{float:left;line-height: 34px;font-family: Verdana,arial,Simsun,Microsoft Yahei,sans-serif;font-size: 14px;margin-left: 5px;color: #555555;}
+		.menuDiv>ul{float:left;}
+		.menuDiv>ul>li{float:left;margin-left: 10px;list-style: none;}
+		.menubar .easyui-menubutton .l-btn-text{line-height: 30px;font-family: Verdana,arial,Simsun,Microsoft Yahei,sans-serif;font-size: 14px;font-weight: bold;margin: 0 10px;}
+		.menubar .easyui-menubutton .m-btn-downarrow{display: none;}
+		.menubar .easyui-menubutton .s-btn-plain-active,.menubar .m-btn-plain-active{color: #49920E;}
+		.menubar .easyui-menubutton .l-btn-plain:hover{color: #49920E;}
+    </style>
+    <script type="text/javascript">
+	$(function(){
+		//var n = new Date();
+		//jQuery("#timeDiv").html('时间：'+n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日');
+	});
+	function openInView(title,url){
+		if(url && !jQuery("#center_view").tabs("exists",title)){
+        	jQuery("#center_view").tabs("add",{
+        		title:title,
+        		fit:true,
+        		bodyCls:'panel-noscroll',
+        		content : "<iframe src="+url+" frameborder='0' width='100%' height='100%'></iframe>",
+        		closable : true
+        	});
+        }else if(url && jQuery("#center_view").tabs("exists",title)){
+        	jQuery("#center_view").tabs("select",title);
+        }
+	}
+	function reload(){
+		var tab = $("#center_view").tabs("getSelected");
+		$("#center_view").tabs("update",{tab:tab,options:{}});
+	}
+
+	function closeTab(){
+		var tab  =$("#center_view").tabs("getSelected");
+		$("#center_view").tabs("close",$("#center_view").tabs("getTabIndex",tab));
+	}
+	function loginCancel(){
+		  var index;
+		   layer.confirm('您确定要退出吗？', {
+			    btn: ['确定','取消'] //按钮
+			}, function(){
+				window.location.href = "${webPath}/system/user/loginCancel.htm";
+			}, function(){
+			   
+			});
+	}
+</script>
+</head>
+ <body style="width: 100%;">
+    <div class="easyui-layout" data-options="fit:true,border:false">
+    	<div data-options="region:'north',border:false" style="height: 115px;">
+    		<div class="easyui-layout" data-options="fit:true,border:false">
+    			<div data-options="region:'center',border:false" style="position: relative;background: #6AA0F0;border: none;padding: 0px;">
+    			    <img  src="${webPath}/resource/system/img/banner_bg.png" style="height: 90%;width: 600px;">
+		    		<div class="user_info_div">
+		    			<div class="user_name">欢迎您，${Session.SPRING_SECURITY_CONTEXT.getAuthentication().getName()}</div>
+		    			<div style="background-color: #6AA0F0;cursor: pointer;" onclick="loginCancel();">退出</div>
+		    		</div>
+	    		</div>
+	    		<div class="menuDiv" data-options="region:'south',border:false" style="height: 35px;background: url('${base.contextPath}/resource/system/img/menu_bg.png');padding-left: 5px;">
+	   				<ul class="menubar">
+	   					<#if resourceList??>
+		    		   	     <#list resourceList as resource>
+		    		   	       <li><a href="javascript:void(0)" class="easyui-menubutton" <#if (resourceTool.ischilResource(resource.id))>data-options="menu:'#menu${resource.id}'"<#else> onclick="openInView('${resource.name}','${webPath}${resource.value}');"</#if>>${resource.name}</a></li>
+		    		   	    </#list>
+    		   	  		</#if>
+	   				</ul>
+	   				<div id="timeDiv" style="float: right;margin-right: 10px;"></div>
+	    		</div>
+    		</div>
+    	</div>
+    	<div data-options="region:'center',border:false">
+    		<div id="center_view" class="easyui-tabs" data-options="tools:'#tool',fit:true,border:false"></div>
+    	</div>
+    	<div data-options="region:'south',border:false" style="height: 30px;text-align: center;background-color: #6AA0F0;line-height: 30px;color: #fff;">湖北省安全生产应宣传教育中心　安宣科技&copy版权所有</div>
+    </div>
+    <div id="tool">
+    	<a onclick="reload();" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true"></a>
+    	<a onclick="closeTab();" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true"></a>
+    </div>
+    <!-- 二级菜单 -->
+    <#if resourceList??>
+	    <#list resourceList as resource>
+		   <div id="menu${resource.id}">
+		       <#if (resourceTool.findResourceByParentId(resource.id)?size>0)>
+			        <#list resourceTool.findResourceByParentId(resource.id) as chilResource>
+			            <div data-options="iconCls:'${chilResource.icon}'" onclick="openInView('${chilResource.name}','${webPath}${chilResource.value}');">${chilResource.name}</div> 
+		    		</#list>
+	    		</#if>
+	    	</div>
+	    </#list>
+    </#if>
+  </body>
+</html>

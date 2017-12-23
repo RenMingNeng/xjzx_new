@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>人员修改</title>
+<link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+<style>
+.form-input{width:40%;}
+.form-label{width:10%;}
+.form-table{overflow:auto!important; }
+.pull-left{float: left;}
+.pull-right{float: right;}
+</style>
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/jquery/ajaxUpload.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/resource/front/js/v2/ck/ckplayer/ckplayer.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+    <script type="text/javascript">
+       var param = EasyUIExt.myOpener.param,ue;
+       jQuery(function(){
+    	   // 头像图片回显
+    	   if(param.entity.picture_url&&param.entity.picture_url.indexOf("FileUpload")!=-1){
+				 $("#form-cover").attr("src",top.baseUrl+param.entity.picture_url);	
+		   }
+    	   EasyUIExt.initForm(param);
+    	   var url = "${webPath}/system/person/updatePerson.htm";
+    	   jQuery("#myForm").form({
+	   			url : url,
+				dataType:"json",
+				onSubmit:function(){
+					index = top.layer.load(1, {
+					    shade: [0.5,'#000'] //0.1透明度的白色背景
+					});
+				},
+				success:function(data){
+					top.layer.close(index);
+					var data = eval('(' + data + ')');
+					if(data.code=="success"){
+						layer.msg("操作成功！", {icon: 1});
+						param.success(EasyUIExt.myOpener.dialog,data);
+					}else{
+						layer.msg("操作失败！", {icon: 2});
+					}
+			    } 
+		    });
+    		jQuery("#myForm").form("disableValidation");
+    		jQuery("#myForm").form("enableValidation");
+    		
+			//上传封面
+			new AjaxUpload("#uploadImg", {
+				action : top.baseUrl +"/system/uploadFile.htm",
+				autoSubmit : true,
+				responseType: "json",
+				name : "docfile",
+				onSubmit : function(file, extension) {
+					if (extension && /^(jpg|jpeg|bmp|gif|png|tif)$/.test(extension)) {
+					} else {
+						$.messager.alert("提示信息","你所选择的文件格式不支持，支持的格式包含jpg|jpeg|bmp|gif|png|tif");
+						return false;
+					}
+					uploadding = top.layer.load(0, {shade: false});
+				},
+				onComplete : function(file, data) {
+					top.layer.close(uploadding);
+				    if(data.code=="success"){
+				    	var cover = top.baseUrl + data.data;
+				    	$("#form-picture_url").attr("value",data.data);
+				    	$("#form-cover").attr("src",cover);
+				    	top.layer.msg("上传成功！");
+				    }else{
+				    	$.messager.alert("提示信息", "上传失败！");
+				    }
+				}
+			});
+       });
+       
+       function submitForm(){
+    	   // 表单验证
+    	   if(validate() && jQuery("#myForm").form("validate")){
+    		   jQuery("#myForm").submit();
+			}
+       }
+       
+       function validate(){
+    	   var name = $.trim($("#form-name").val());
+    	   if(null == name || '' == name){
+    		   layer.msg("姓名不得为空！");
+    		   return false;
+    	   }
+    	   return true;
+       }
+    </script>
+</head>
+<body>
+   	<form id="myForm" method="post">
+  	 	<input id="form-id" type="hidden" name="id"/>
+  	  	<input id="form-is_valid" type="hidden" name="is_valid"/>
+  	 <table class="form-table">
+  	 	<tr>
+  	 		<td class="form-label">姓名</td>
+  	 		<td class="form-input">
+  	 			<input id="form-name" name="name" style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">性别</td>
+  	 		<td class="form-input">
+  	 			<select id="form-sex" name="sex">
+  	 				<option value="1">-- 男 --</option>
+  	 				<option value="2">-- 女 --</option>
+  	 			</select>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 	    <td class="form-label" >头像</td>
+  	 		<td class="form-input"   height="80px;" >
+  	 		   <img class="pull-left"  src="${webPath}/resource/system/img/zanwutupian.jpg" id="form-cover" style="width: 100px;height: 130px;"/>
+  	 		   <input type="hidden" name="picture_url" id="form-picture_url" value=""/>
+  	 		   <div class="pull-left" style="margin-left:5px;">
+  	 		    	<a class="easyui-linkbutton" id="uploadImg" style="margin-top:45px;">上传头像</a>
+  	 		    	<div style="font-size: 12px;color: gray">* jpg、jpeg、bmp、gif、png、tif</div>
+  	 		   </div>	
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label" >头像显示</td>
+  	 		<td class="form-input" >
+  	 			<select id="form-picture_state" name="picture_state">
+  	 				<option value="1">-- 是 --</option>
+  	 				<option value="2">-- 否 --</option>
+  	 			</select>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">职位</td>
+  	 		<td class="form-input">
+  	 		   <input id="form-job" name="job"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">职称</td>
+  	 		<td class="form-input">
+  	 		   <input id="form-position" name="position"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 </table>
+ 	 </form>
+ 	<div class="dialog-button">
+   		<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+ 		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+   </div>
+</body>
+</html>

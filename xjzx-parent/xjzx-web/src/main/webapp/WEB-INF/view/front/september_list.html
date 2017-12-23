@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="${webPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+        <div class="location">您当前位置：安全月活动&gt; </div>
+        	<div class="side_bar">   
+	        <dl class="nBox">
+		        <dt class="tit01"><strong>安全动态</strong></dt>	
+		        <dd>
+		           <#if (dynamicList?exists)&&(dynamicList?size>0)>
+		            <ul class="list01">
+		               <#list dynamicList as dynew>
+		                   <li>
+						     <a href="${webPath}/news/detail/${dynew.id}.htm" target="_blank">${html.delHTMLTag(dynew.title,20)} </a>
+					       </li>
+		               </#list>
+		            </ul>
+		            </#if>
+		        </dd>
+	        </dl>
+	  </div>
+	      <div class="details mgt10" id="prArea">
+		<div class="head-title"><h1><span></span>安全生产月活动</h1></div>
+        <div class="focus-news-wrap">
+            <#if (fnewsPage.rows?exists)&&(fnewsPage.rows?size>0)>
+        	<ul>
+	           <#list fnewsPage.rows as fnews>
+        		<li>
+        		  <p class="focus-news-title"><a href="${webPath}/september/detail/${fnews.id}.htm" target="_blank">${html.delHTMLTag(fnews.title,20)}</a></p>
+        			<div>
+        				<div class="left-box-info-wrap">
+        					<img src="${webPath}${fnews.imgUrl}"/>
+        				</div>
+        				<p class="news-description"><a href="${webPath}/september/detail/${fnews.id}.htm " target="_blank">${html.delHTMLTag(fnews.description,40)}[<em>详情</em>]</a></p>
+        			</div>
+        			<div class="clear"></div>
+        			<p class="bottom-box-info mgt5">宣教中心  | ${fnews.time?string("yyyy-MM-dd")}</p>
+        		</li>
+        		</#list>
+        	</ul>
+        	</#if>
+        </div>                  
+    </div>
+    </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>

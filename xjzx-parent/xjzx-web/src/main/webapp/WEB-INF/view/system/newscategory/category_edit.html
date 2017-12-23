@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>数据字典管理</title>
+  <meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+    	var Q = jQuery;
+    	var param = EasyUIExt.myOpener.param;
+    	Q(function(){
+    		EasyUIExt.initForm(param);
+    		$("#form-parentId").val(param.entity!=null&&param.entity.parent!=null?param.entity.parent.id:0);
+    		$("#form-parentName").val(param.entity!=null&&param.entity.parent!=null?param.entity.parent.name:"根目录");
+    		var url = "${webPath}/system/category/add.htm";
+    		if(param.type == "update"){
+    			url = "${webPath}/system/category/update.htm";
+    		}
+    		var index;
+    		Q("#myForm").form({
+    			url : url,
+    			onSubmit:function(){
+    				index = top.layer.load(1, {
+    				    shade: [0.5,'#000'] //0.1透明度的白色背景
+    				});
+    			},
+    			success:function(data){
+    				   top.layer.close(index);
+					   var data = eval('(' + data + ')');
+						param.success(EasyUIExt.myOpener.dialog,data);
+			    } 
+			});
+			Q("#myForm").form("disableValidation");
+			Q("#myForm").form("enableValidation");
+    	});
+    	
+    	function submitForm(){
+    		if(Q("#myForm").form("validate")){
+				Q("#myForm").submit();
+			}
+    	}
+    	
+    	function selectParent(){
+    		EasyUIExt.iframeDialog({
+				url:'${webPath}/system/category/categorySelect.htm',
+				width:300,
+				height:300,
+				title:"选择类型",
+				param:{
+					success : function(dialog,data){
+						Q("#form-parentId").val(data.attributes.id);
+    					Q("#form-parentName").val(data.attributes.name);
+						dialog.dialog("close");
+					}
+				}
+			});
+    	}
+    </script>
+  </head>
+  
+  <body>
+  	<form id="myForm" method="post">
+	  	 <input id="form-id" type="hidden" name="id" value="0"/>
+	  	 <input id="form-state" type="hidden" name="state" value="1"/>
+	  	 <input id="form-parentId" type="hidden" name="parent.id" value="0"/>
+	  	 <table class="form-table">
+	  	 	<tr>
+	  	 		<td class="form-label">类型名称</td>
+	  	 		<td class="form-input">
+	  	 			<input id="form-name" name="name" style="width: 150px;"/>
+	  	 		</td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td class="form-label">父字典</td>
+	  	 		<td class="form-input">
+	  	 			<input id="form-parentName" style="width: 150px;" class="easyui-validatebox" data-options="" value="根目录" readonly="readonly"/>
+	  	 			<a class="easyui-linkbutton" onclick="selectParent();">选择</a>
+	  	 		</td>
+	  	 	</tr>
+	  	 	
+	  	 </table>
+  	 </form>
+  	<div class="dialog-button">
+    	<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+  		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+    </div>
+  </body>
+</html>

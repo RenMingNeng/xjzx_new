@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>组织架构管理</title>
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+<script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+<script type="text/javascript">
+	jQuery(function() {
+		jQuery("#examTb").datagrid({
+			url:'${webPath}/system/organ/getOrganPage.htm?type=3',
+			striped : true,
+			fit:true,
+			pageList:[10,15,20,30,50],
+			pagination:true,
+			rownumbers:true,
+			toolbar:"#toolBar",
+			columns:[[
+				  {field:"checkbox",checkbox:true},
+			          {field:'name',title:'考试点',width:320,sortable:true,align:'center'}, 
+			          {field:'area',title:'归属地',width:120,sortable:true,align:'center',formatter:function(v){
+			        	  if(null != v){
+			        		 return v.dictName ;
+			        	  }
+			          }},   
+			          {field:'address',title:'地址',width:200,sortable:true,align:'center'},    
+			          {field:'contacts',title:'联系人',width:300,align:'center'},
+			          {field:'url',title:'网址',width:100,align:'center'},
+			          {field:'tel',title:'电话',width:300,align:'center'}
+					]],
+			onLoadSuccess:function(){
+				jQuery(this).datagrid("unselectAll");
+			},
+			loadFilter:function(data){
+				data.data.rows = data.data.data;
+				return data.data;
+			}  
+    	});
+	});
+	function addExam(){
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/exam/loadAddExam.htm',
+			width : 900,
+			height : 600,
+			title : "新增-考试中心",
+			param : {
+				type : "add",
+				success : function(dialog, data) {
+					var icon = data.code == "success" ? 1 : 2;
+					if (data.code == "success") {
+						top.layer.alert(data.message, {icon : icon,skin : 'layer-ext-moon'});
+						dialog.dialog("close");
+						jQuery("#examTb").datagrid("reload");
+					}
+				}
+			}
+		});
+	}
+	function updateExam(){
+	var selected = jQuery("#examTb").datagrid("getSelections");
+	if (selected.length != 1) {
+		top.$.messager.alert("提示信息", "请选择一条数据进行操作！");
+		return;
+	}
+	EasyUIExt.iframeDialog({
+		url : '${webPath}/system/exam/loadUpdateExam.htm',
+		width : 900,
+		height : 600,
+		title : "修改-考试地点",
+		param : {
+			type : "update",
+			entity : selected[0],
+			success : function(dialog, data) {
+				var icon = data.code == "success" ? 1 : 2;
+				top.layer.alert(data.message, {
+					icon : icon,
+					skin : 'layer-ext-moon'
+				});
+				if (data.code == "success") {
+					jQuery("#examTb").datagrid("reload");
+					dialog.dialog("close");
+				}
+			}
+		}
+	});
+}
+	//删除信息
+function deleteExam() {
+		var selected = $("#examTb").datagrid("getSelections");
+		if (selected.length == 0) {
+			top.$.messager.alert("提示信息", "请选择数据！");
+			return;
+		}
+		var idlist = [];
+		for (var i = 0, len = selected.length; i < len; i++) {
+			idlist.push(selected[i].id);
+		}
+		top.$.messager.confirm("提示信息", "是否确定删除？", function(r) {
+			if (r) {
+				jQuery.ajax({
+					url : "${webPath}/system/organ/deleteOrgan.htm",
+					dataType : "json",
+					type : "post",
+					data : {
+						ids : idlist.join(",")
+					},
+					success : function(data) {
+						var icon = data.code == "success" ? 1 : 2;
+						top.layer.alert(data.message, {
+							icon : icon,
+							skin : 'layer-ext-moon'
+						});
+						jQuery("#examTb").datagrid("reload");
+					}
+				});
+			}
+		});
+	}
+function queryDictValue() {
+	var queryParam = {};
+	if ($("#txtCode").val()) {
+		queryParam.name = $("#txtCode").val();
+	}
+	if ($("#txtValue").val()) {
+		queryParam.contacts = $("#txtValue").val();
+	}
+	$("#examTb").datagrid("load", queryParam);
+}
+function resetQuery(){
+	   $("#txtCode").val("")
+	   $("#txtValue").val("")
+	   queryDictValue();
+}
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true,border:false">
+		<div data-options="region:'center',title:'新闻动态列表',border:false">
+			<table id="examTb"></table>
+		</div>
+		<div id="toolBar" class="search-toolbar">
+			<table>
+				<tr>
+					<td class="search-label" style="width: 85px;">考试中心名称</td>
+					<td class="search-input"><input style="width: 95px;"
+						id="txtCode" type="text" /></td>
+					<td class="search-input"><input style="width: 95px;" id="txtCode" type="text" /></td>
+					<td class="search-label" style="width: 55px;">联系人</td>
+					<td class="search-input"><input style="width: 95px;" id="txtValue" type="text" /></td>
+					<td><a onclick="queryDictValue();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-search',plain:false">查询</a> <a
+						onclick="resetQuery();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+				</tr>
+			</table>
+			<div>
+				<a onclick="addExam();" class="easyui-linkbutton"
+					data-options="iconCls:'icon-add',plain:true">新增</a> <a
+					onclick="updateExam();" class="easyui-linkbutton"
+					data-options="iconCls:'icon-edit',plain:true">修改</a> <a
+					onclick="deleteExam();" class="easyui-linkbutton"
+					data-options="iconCls:'icon-remove',plain:true">删除</a> 
+			</div>
+		</div>
+	</div>
+</html>

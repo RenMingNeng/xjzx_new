@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 2.6//EN" "http://tuckey.org/res/dtds/urlrewrite2.6.dtd">
+<urlrewrite>
+ <rule>
+	<note>新闻详情页面</note>
+	<from>^/news/detail/([0-9]+).htm$</from>
+	<to type="forward">/news/detail.htm?id=$1</to>
+</rule>
+<rule>
+	<note>新闻类型列表2</note>
+	<from>^/news/list/([0-9]+).htm$</from>
+	<to type="forward">/news/list.htm?categoryid=$1&amp;page=1</to>
+</rule>
+<rule>
+	<note>新闻类型列表1</note>
+	<from>^/news/list/([0-9]+)/([0-9]+).htm$</from>
+	<to type="forward">/news/list.htm?categoryid=$1&amp;page=$2</to>
+</rule>
+
+<rule>
+	<note>全省监考人员名单</note>
+	<from>^/proctor/list/([0-9]+).htm$</from>
+	<to type="forward">/proctor/list.htm?id=$1</to>
+</rule>
+<rule>
+	<note>全省安全培训师资名单</note>
+	<from>^/evaluate/list/([0-9]+).htm$</from>
+	<to type="forward">/evaluate/list.htm?id=$1</to>
+</rule>
+<rule>
+	<note>全省考评人员名单</note>
+	<from>^/teacher/list/([0-9]+).htm$</from>
+	<to type="forward">/teacher/list.htm?id=$1</to>
+</rule>
+<rule>
+	<note>培训资料库列表</note>
+	<from>^/information/list/([0-9]+)/([0-9]+).htm$</from>
+	<to type="forward">/information/list.htm?did=$1&amp;page=$2</to>
+</rule>
+<rule>
+	<note>培训资料库详情</note>
+	<from>^/information/detail/([0-9]+).htm$</from>
+	<to type="forward">/information/detail.htm?id=$1</to>
+</rule>
+<rule>
+	<note>法律法规列表</note>
+	<from>^/law/list/([0-9]+)/([0-9]+).htm$</from>
+	<to type="forward">/law/list.htm?dictid=$1&amp;page=$2</to>
+</rule>
+<rule>
+	<note>法律法规详情</note>
+	<from>^/law/detail/([0-9]+).htm$</from>
+	<to type="forward">/law/detail.htm?id=$1</to>
+</rule>
+<rule>
+	<note>安全生产月列表</note>
+	<from>^/september/list/([0-9]+).htm$</from>
+	<to type="forward">/september/list.htm?page=$1</to>
+</rule>
+<rule>
+	<note>法律法规详情</note>
+	<from>^/september/detail/([0-9]+).htm$</from>
+	<to type="forward">/september/detail.htm?id=$1</to>
+</rule>
+<rule>
+	<note>中心介绍详情</note>
+	<from>^/normal/detail/([0-9]+).htm$</from>
+	<to type="forward">/normal/detail.htm?pid=$1</to>
+</rule>
+<rule>
+	<note>党建工作列表</note>
+	<from>^/normal/list/([0-9]+)/([0-9]+).htm$</from>
+	<to type="forward">/normal/list.htm?pid=$1&amp;page=$2</to>
+</rule>
+<rule>
+	<note>党建工作列表</note>
+	<from>^/normal/edit/([0-9]+).htm$</from>
+	<to type="forward">/normal/edit.htm?id=$1</to>
+</rule>
+</urlrewrite>
+

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>调查修改</title>
+<link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/jquery/ajaxUpload.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+    <style>
+    	input[type="radio"],
+    	input[type="checkbox"]{
+    		vertical-align: middle;
+    		height:auto!important;
+    	}
+    	.input_group > div{
+    		display: none;
+    	}
+    	.input_group > div > div{
+    		margin:10px;
+    	}
+    	.input_group input[type="text"]{
+    		width:675px;
+    	}
+    	.input_group button{
+    	cursor: pointer;}
+    	.input_group textarea{resize:none;width:700px;height:90px;margin:10px;padding:5px;}
+    	.form-label{
+    		width: 60px;
+    	}
+    </style>	
+    <script type="text/javascript">
+       var param = EasyUIExt.myOpener.param,ue;
+       jQuery(function(){
+    	    EasyUIExt.initForm(param);
+    	   var url = "${webPath}/system/question/updateQuestion.htm";
+    	   jQuery("#myForm").form({
+	   			url : url,
+				dataType:"json",
+				onSubmit:function(){
+					index = top.layer.load(1, {
+					    shade: [0.5,'#000'] //0.1透明度的白色背景
+					});
+				},
+				success:function(data){
+					top.layer.close(index);
+					var data = eval('(' + data + ')');
+					if(data.code=="success"){
+						layer.alert("操作成功！", {icon: 1});
+						param.success(EasyUIExt.myOpener.dialog,data);
+					}else{
+						layer.alert("操作失败！", {icon: 2});
+					}
+			    } 
+		    });
+    		jQuery("#myForm").form("disableValidation");
+    		jQuery("#myForm").form("enableValidation");
+       });
+       
+       function submitForm(){
+    	   if(validate() && jQuery("#myForm").form("validate")){
+    		   jQuery("#myForm").submit();
+		   }
+       }
+       
+       function validate(){
+    	   var title = $.trim($("#form-title").val());
+    	   if( null == title || '' == title){
+    		   layer.msg("调查标题不得为空！");
+    		   return false;
+    	   }
+    	   if(title && title.length > 40){
+    		   layer.msg("调查标题不得长度不得超过40个字符！");
+    		   return false;
+    	   }
+    	   return true;
+       }
+    </script>
+</head>
+<body>
+   	<form id="myForm" method="post">
+   	<#if question?exists>
+  	 <table class="form-table">
+  	 	<tr>
+  	 		<td class="form-label">调查主题</td>
+  	 		<td class="form-input" colspan="3">
+  	 			  <input id="form-title" name="title" style="width:715px;"/>
+  	 			  <span style="font-size: 12px;color: gray">*限225个字符</span>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">调查类型</td>
+  	 		<td class="form-input select-type">
+  	 			<#if question.type == '1'>
+  	 				<label><input type="radio" name="type" value="1" /> 单选</label>&nbsp;&nbsp;&nbsp;&nbsp;
+  	 			</#if>
+  	 			<#if question.type == '2'>
+  	 				<label><input type="radio" name="type" value="2" /> 多选</label>&nbsp;&nbsp;&nbsp;&nbsp;
+  	 			</#if>
+  	 			<#if question.type == '3'>
+  	 				<label><input type="radio" name="type" value="3" /> 简答</label>&nbsp;&nbsp;&nbsp;&nbsp;
+  	 			</#if>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">设置选项</td>
+  	 		<td class="form-input input_group">
+  	 			<#if question.type == "1">
+	  	 			<!-- 单选 start -->
+	  	 			<div class="item">
+		  	 			<div>
+		  	 				<button type="button" class="add_input" data-type="1">添加选项</button>
+		  	 				<span style="font-size: 8px;color: gray">* 不得超过225个字符</span>	
+		  	 			</div>
+		  	 			<#if (question.questionOptions?exists)&&(question.questionOptions?size>0)>
+			  	 			<#list question.questionOptions as questionOption> 
+				  	 			<div>
+				  	 				<input type="radio" name="radio"/>&nbsp;&nbsp;
+				  	 				<input type="hidden" name="questionOptions[${questionOption_index}].key" value="${questionOption.key}"/>
+				  	 				<input type="text" name="questionOptions[${questionOption_index}].value" value="${questionOption.value}"/>
+				  	 				<button class="remove_" type="button">删除</button>	
+				  	 			</div>	
+			  	 			</#list>
+		  	 			</#if>
+	  	 			</div>	
+	  	 			<!-- 单选 end -->
+  	 			<#elseif question.type == "2">
+	  	 			<!-- 多选 start -->
+	  	 			<div class="item">
+	  	 				<div>
+		  	 				<button type="button" class="add_input" data-type="2">添加选项</button>	
+		  	 			</div>
+		  	 			<#if (question.questionOptions?exists)&&(question.questionOptions?size>0)>
+			  	 			<#list question.questionOptions as questionOption>
+				  	 			<div>
+				  	 				<input type="checkbox"/>&nbsp;&nbsp;
+				  	 				<input type="hidden" name="questionOptions[${questionOption_index}].key" value="${questionOption.key}"/>
+				  	 				<input type="text" name="questionOptions[${questionOption_index}].value" value="${questionOption.value}"/>
+				  	 				<button class="remove_" type="button">删除</button>	
+				  	 			</div>
+			  	 			</#list>
+	  	 				</#if>	
+	  	 			</div>
+	  	 			<!-- 多选 end -->
+  	 			<#else>
+  	 				<!-- 简答start -->
+	  	 			<div class="item">
+	  	 				<textarea readonly="readonly">此处为用户简答区域...</textarea>
+	  	 			</div>
+	  	 			<!-- 简答end -->
+  	 			</#if>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">调查显示</td>
+  	 		<td class="form-input">
+  	 			 <label><input type="radio" name="is_valid" value="1" <#if question.is_valid == '1'>checked</#if>/> 显示</label>
+  	 		   	 <label><input type="radio" name="is_valid" value="2" <#if question.is_valid == '2'>checked</#if>/> 不显示</label>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">展示顺序</td>
+  	 		<td class="form-input"  >
+  	 		   <input id="form-desc_no" type="text" class="easyui-validatebox"  name="desc_no" value="1"/>
+  	 		   <span style="font-size: 9px;color: #999">Tips : 设置数值越小显示越靠前，如1，2，3...</span>
+  	 		</td>
+  	 		
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">操作人</td>
+  	 		<td class="form-input"  >
+  	 		   <input type="text" readonly="readonly"  name="operate_user" value="${Session.SPRING_SECURITY_CONTEXT.getAuthentication().getName()}"/>
+  	 		</td>
+  	 	</tr>
+  	 </table>
+  	 </#if>
+  	 	<input type="hidden" name="id" value="${question.id}"/>
+  	 	<input type="hidden" name="create_time" value="${question.create_time}"/>
+  	 	<input type="hidden" name="create_user" value="${question.create_user}"/>
+  	 	<input type="hidden" name="back_valid" value="${question.back_valid}"/>
+  	 	<input type="hidden" name="feedback" value="${question.feedback}"/>
+ 	 </form>
+ 	<div class="dialog-button">
+ 		<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">保存</a>
+ 		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">关闭</a>     
+   </div>
+   <script>
+	$(function(){
+		$('.select-type label').click(function(){
+			var $this = $(this);
+			var index = $this.index();
+			$('.input_group :input').attr('disabled',true);
+			$('.input_group .item:eq('+ index +')').show().siblings('.item').hide();
+			$('.input_group .item:eq('+ index +') :input').attr('disabled',false);
+		});
+		
+		$('.select-type label:eq(0)').trigger('click');
+		
+		$('.add_input').click(function(){
+			var $this = $(this);
+			var $p = $this.parents('.item');
+			var len = $p.children('div').length;
+			if( len === 9 ){return;}
+			var type = $this.data('type');
+			var html = '';
+			if( type == 1 ){
+				type = 'radio';
+			}else if( type == 2 ){
+				type = 'checkbox';
+			}
+			html += '<div>';
+			html +=	'<input type="' + type + '" name="'+ type +'"/>&nbsp;&nbsp;<input type="text" id="option'+ len +'" name="answer_option" value=""/> ';
+			html +=	'<button class="remove_" type="button">删除</button>';	
+			html += '</div>';
+			$p.append(html);
+		});
+		$('.input_group').delegate('.remove_','click',function(){
+			var $this = $(this);
+			var $p = $this.parent();
+			var optionId = $p.find('input[name$=key]').val();
+			if(null == optionId || "" == optionId){
+				$p.remove();
+			}else{
+				//询问框
+				layer.confirm('确定要删除该选项吗？', {
+				  btn: ['确定','取消'] //按钮
+				}, function(){
+					jQuery.ajax({
+						url : "${webPath}/system/question/deleteOption.htm",
+						type : "post",
+						dataType : "html",
+						data : {id:optionId},
+						success : function(data) {
+							var result = eval('(' + data + ')');
+							if('success' == result.code){
+					 			layer.msg("删除成功！",{icon:1,time:1000});
+					 			$p.remove();
+					 		}else if('already' == result.code){
+					 			layer.msg("删除失败！",{icon:2,time:1000});
+					 		}
+						}
+					});
+				});
+			}
+		})
+	})
+   </script>
+</body>
+</html>

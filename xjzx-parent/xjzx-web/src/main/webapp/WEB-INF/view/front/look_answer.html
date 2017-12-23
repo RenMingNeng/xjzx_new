@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+<script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+<style>
+h1{
+	color: #8E9289;
+	text-align: center;
+	background: #C7EDCC;
+	font-size: 16px;
+}
+h2{
+	font-size:14px;
+}
+.header {
+    padding: 5px 10px;
+}
+body .panel-header{
+    text-align: center;
+    background: #C7EDCC;
+}
+body .panel-body{
+   border:none;
+}
+body .panel-title{
+	color: #8E9289;
+	font-size: 16px;
+	font-weight:normal;
+}
+body .datagrid-header, 
+body .datagrid-toolbar, 
+body .datagrid-pager, 
+body .datagrid-footer-inner,
+body .datagrid-body{
+	background:#EBF5E0;        
+}
+body .datagrid-body td{
+	background:#fff;
+}
+body .datagrid-header td,
+body .datagrid-body td,
+body .datagrid-footer td{
+	border: 1px solid #DAEEC7;
+}
+body .datagrid-header-row{
+}
+	
+</style>
+</head>
+<body>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'north',border:false" style="height:50px;background:#EBF5E0;">
+		<h1>===网站调查结果===</h1>
+		<div class="clear header">
+	  	  <h2 class="fl" style="font-weight: bolder;">${title} </h2>
+	  	  <span class="fr" style="font-weight: normal;">总票数:     
+		  	<em style="font-weight:bold;color:#E0523A;">${allCount}</em>
+	  	</span>
+	  	</div>
+	</div>
+	<!-- 表格 -->
+	<div data-options="region:'center',border:false">
+	   <table id="answer_list" style="height:100%;"></table>
+    </div>
+ <input type="hidden" name="questionId" id="questionId" value="${questionId}"/>
+</div>		
+  <script type="text/javascript">
+  $(function(){
+	  list();
+  })
+    function list(){
+	  	var questionId = $("#questionId").val();
+		jQuery("#answer_list").datagrid({
+			 queryParams: {
+				 'id' : questionId
+			 },
+			 url: '${webPath}/question/lookAnswerList.htm', 
+			 striped : true,
+			 fit:true,
+			 pageList:[10,15,20,30,50],
+			 pagination:true,
+			 rownumbers:true,
+			 toolbar:"#toolBar",
+			 columns: [[
+	            {field:'content', title:'提交内容',width:480},
+                {field:'create_time', title:'提交日期',width:130,align:'center'}
+             ]],
+		     nowrap : false, 	//超出部分换行
+		     onLoadSuccess : function(data){
+		    	 //console.log(data);
+		    	 handlerEmpty("answer_list", data);
+		     },
+			 loadFilter:function(data){
+					data.data.rows = data.data.data;
+					return data.data;
+			 } 
+		}); 
+	};
+	
+	//列表无数据时提示信息
+	function handlerEmpty(id, data){
+		if(data.total==0){
+			var body = $('#'+id).data().datagrid.dc.body2;
+	 			body.find("table tbody").empty().append("<tr><td align=\"center\" class=\"empty-info\" width=\""+body.width()+"\" >未查询到符合条件的数据!</td></tr>");
+			// 隐藏分页导航条
+			$('#'+id).closest("div.datagrid-wrap").find("div.datagrid-pager").hide();
+		}else{
+			// 显示分页导航条
+			$('#d'+id).closest("div.datagrid-wrap").find("div.datagrid-pager").show();
+		}
+	};
+	
+  </script>
+</body>
+</html>

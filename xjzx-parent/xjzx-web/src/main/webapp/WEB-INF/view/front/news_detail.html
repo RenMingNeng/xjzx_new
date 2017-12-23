@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+         <div class="location">您当前位置：
+          <#if news??>
+            <#if news.category.parent??>
+         	 ${news.category.parent.name!''}</#if>&gt;
+            </#if>
+          <#if news??>${news.category.name!''}</#if></div>
+          <div class="side_bar">
+               <dl class="nBox">
+	            <dt><strong>点击排行</strong></dt>
+	            <dd id="rankbox">
+	                 <#if (clickNumberList?exists)&&(clickNumberList?size>0)>
+	            		 <ul class="list01">
+		                   <#list clickNumberList as clickNews>
+		                      <li>
+		                       <a href="${webPath}/news/detail/${clickNews.id}.htm" target="_blank">${html.delHTMLTag(clickNews.title,16)} </a>
+		                      </li>
+	                      </#list>
+	             		</ul>                    
+	                 </#if>
+	            </dd>
+	        </dl>
+	         <dl class="nBox">
+		        <dt class="tit01"><strong>推荐文章</strong></dt>	
+		        <dd>
+		              <#if (tjNewsList?exists)&&(tjNewsList?size>0)>
+			            <ul class="list01">
+			               <#list tjNewsList  as tjNews>
+					           <li>
+								  <a href="${webPath}/news/detail/${tjNews.id}.htm" target="_blank">${html.delHTMLTag(tjNews.title,16)} </a>
+							   </li>
+						   </#list>
+			            </ul>
+					   </#if>
+		        </dd>
+       	   </dl>
+        </div>
+        <div class="details" id="prArea">
+          <div class="artTit">
+            <h2>${news.title}</h2>
+            <div class="artInfo"><span class="artTool"><a href="javascript:;" id="fsmall">A-</a> <a href="javascript:;" id="fbig">A+</a><span>浏览量:${news.clicknumber}</span> <a href="javascript:;" id="collect">收藏</a> <a href="#" id="printArt" rel="prArea">打印文章</a></span>来源:${news.forms!''}| ${news.time?string('yyyy-MM-dd')} </div>
+            <div class="dline"></div>
+          </div>
+          <div class="artcle" id="artcle">
+            ${news.content!''}
+          </div>
+        </div>
+     </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>

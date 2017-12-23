@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css" />
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css" />
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery.min.js"></script>
+</head>
+<body>
+	<div class="wrap">
+		${httpInclude.include("/top.htm")}
+		<div class="content">
+			<div class="location">您当前位置： ${title}</div>
+			<div  class="search-btn-group">
+	        <form name="form1" method="post" action="${webPath}/proctor/list.htm" style="text-align: right;display: block;margin-bottom:5px;">
+              <input name="textSeacher" type="text" id="textSeacher" value="" placeholder="请输入证件号或姓名" style="display: inline-block;">
+              <input name="搜索" type="submit" value="搜索" id="search" class="btn-1" style="display: inline-block;background:#1E5B9C;cursor: pointer;">   
+	       	  <a type="button" href="${webPath}/proctor/list.htm" id="searchAll" class="btn-1" style="cursor: pointer;width:60px;height:28px;
+	          display: inline-block;text-align:center;line-height:28px;vertical-align: middle;text-decoration: none;color:#fff!important;">全部</a>
+	        </form>
+			<div>
+				<table class="teacher-name-wrap">
+					<tbody>
+						<tr class="dark-title">
+							<td align="center" style="width: 20%">证件号</td>
+							<td align="center" style="width: 10%">姓名</td>
+							<!-- <td align="center" style="width: 10%">性别</td> -->
+							<td align="center" style="width: 60%">单位</td>
+						</tr>
+						<#if (proctorPage.rows?exists)&&(proctorPage.rows?size>0)> <#list
+							proctorPage.rows as proctor>
+						<tr class="dark-title" style="<#if proctor.id==id>background: #fff;</#if>">
+							<td align="center">${proctor.certinum}</td>
+							<td align="center">${proctor.name}</td>
+							<!-- <td align="center">${proctor.sex!''}</td> -->
+							<td align="center">${proctor.unit}</td>
+						</tr>
+						</#list> </#if>
+					</tbody>
+				</table>
+			</div>
+			<div class="index_cen_righ_fy">
+				<ul>
+					<li><a href="${webPath}/proctor/list.htm?page=1&textSeacher=${textSeacher}">首页 </a></li>
+					<li><a
+						href="${webPath}/proctor/list.htm?page=${proctorPage.before}&textSeacher=${textSeacher}">上一页</a></li>
+					<#list proctorPage.pageListStart..proctorPage.pageListEnd as i>
+					<li style="<#if page==i>background: #e14730;</#if>"><a
+						href="${webPath}/proctor/list.htm?page=${i}&textSeacher=${textSeacher}">${i}</a></li>
+					</#list>
+					<li><a
+						href="${webPath}/proctor/list.htm?page=${proctorPage.next}&textSeacher=${textSeacher}">下一页</a></li>
+					<li><a
+						href="${webPath}/proctor/list.htm?page=${proctorPage.count_page}&textSeacher=${textSeacher}">尾页</a></li>
+				</ul>
+			</div>
+		</div>
+		${httpInclude.include("/foot.htm")}
+	</div>
+	<input type="hidden" id="textContent" name="textContent" value="${textSeacher}">
+</body>
+<script type="text/javascript">
+	// 搜索内容回显
+	$(function(){
+		var textContent = $("#textContent").val();
+		if(null != textContent && '' != textContent){
+			$("#textSeacher").val(textContent);
+		}
+	});
+</script>
+</html>

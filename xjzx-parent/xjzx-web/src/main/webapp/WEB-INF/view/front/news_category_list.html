@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>湖北省安全生产宣传教育中心</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery.min.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+<style>
+.artcle{
+	padding:0;
+	width: 800px;
+}
+.content h4{
+	font-family: arial, helvetica, sans-serif;
+    font-size: 20px;
+    padding: 8px 0;
+    letter-spacing: -1px;
+    line-height: 31px;
+    font-weight: bolder;
+}
+.content table{    
+	width:80%;   
+	margin: 10px auto 0;        
+}    
+.content table td{
+	padding: 10px;
+	border:1px solid #ccc;  
+	min-height:59px;   
+}
+.content table .label{
+	text-align:right;
+	width:100px;
+	font-weight:bold;     
+} 
+.content table img{
+	height: 110px;width: 126px;margin:0;     
+}
+</style>
+</head> 
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+         <div class="location">您当前位置： <#if category??><#if category.parent??>${category.parent.name!''}&gt;</#if>${category.name!''}</#if></div>
+         <div class="mgt-5 mgb-10 clear">
+         	<!-- 目录方块 -->
+            <div class="fl category-box">
+              <#if (category??)&&(category.parent??)>
+                 <div class="current-category">
+                  ${category.parent.name!''}
+                 </div>
+                   <#if (newsCategoryList?exists)&&(newsCategoryList?size>0)>
+                    <div class="list-category">
+                       <ul>
+	                      <#list newsCategoryList as category>
+	                         <li class="<#if category.id==categoryid>category-select</#if>">
+	                            <div>
+	                            <#if category.id==66>
+	                              <a href="http://www.hbaqscwlxy.com" target="_blank">湖北省安全生产网络培训学院</a>
+	                            <#elseif category.id==67>
+	                              <a href="http://27.17.10.114:8081/hbsemis/page/NewIndex.aspx" target="_blank">湖北省安全生产综合管理平台</a>
+	                            <#else>
+	                              <a href="${webPath}/news/list/${category.id}.htm" data-href="${category.id}" class="link" title="${category.name}">${html.delHTMLTag(category.name,20)}</a>
+	                            </#if>
+	                            </div>
+	                         </li>
+	                      </#list>
+                      </ul>   
+                    </div>
+                   </#if>
+              </#if>
+            </div>
+            <!-- 目录方块 -->
+   <div class="fl mgl-10 max-item-box">
+    <div class="news-list-wrap">
+       <#if category.id==54>
+			<div class="artcle content" >
+				<h4>中心概况</h4>
+				<hr style="white-space: normal;">
+				<div id="zhongxingaikuang"></div>
+			</div>
+ 	   <#elseif category.id==56>
+			<div class="artcle content" >
+				<h4>人员机构</h4>
+				<hr style="white-space: normal;">
+				<table id="renyuanjigou"></table>
+			</div>
+	   <#elseif category.id==55>
+			<div class="artcle content" >
+				<h4>办证流程</h4>
+				<hr style="white-space: normal;">
+				<div id="banzhengliucheng"></div>
+			</div>
+	   <#elseif category.id==57>
+			<div class="artcle content" >
+				<h4>科室职责</h4>
+				<hr style="white-space: normal;">
+				<div id="keshizhize"></div>
+			</div>
+	   <#elseif category.id==64>
+			<div class="artcle" id="tezhongzuoyechaxun" style="padding-top:0;">
+				<div class="focus-details" id="prArea">
+	           	 <form method="post" action="${webPath}/certificate/query.htm" id="myForm" >
+						<div style="text-align:center;"><img src="${webPath}/resource/front/images/search-img.png" style="border:none;"/><span style="font-size: 30px;">特种作业证件查询</span></div>
+					<div>
+						<div class="search-box-wrap" style="text-align: center;">
+							<div class="search-area">
+								<input id="certiinput" placeholder="请输入证件号" name="cardNumber" /> <a class="block-a-btn cetisearch-btn" style="color:#fff;text-decoration: none;" href="javaScript:submit();">搜索</a>
+							</div>        
+						</div>
+						<div style="margin-left: 115px;">
+							<p><input type="radio" name="types" checked="checked" value="spelialic"><label>特种作业操作证 <em style="color:#ff0000">(请输入身份证号码查询)</em></label></p>
+						</div>
+	                    <div >
+	                                             由于近期网络服务不稳定,给用户带来不便。中心将尽力减少给用户造成的损失和影响。联系电话：027-87812940
+	                 </div>
+					</div>
+			     </form>
+				<div style="margin-top:60px;">
+					<div class="head-title"><h1><span></span>证件样式</h1></div>
+					<div class="small-img-wrap">
+						<ul class="mgt-10 clear" style="padding:0;">
+							<li><img src="${webPath}/resource/front/images/zs_tz_1.jpg" title="特种作业操作证"/></li>
+							<li><img src="${webPath}/resource/front/images/zs_tz_2.jpg" title="特种作业操作证"/></li>
+						</ul>
+					</div>
+			    </div>
+       		 </div>
+		 </div>
+	<#elseif category.id==65>
+		<div class="artcle" id="qitazuoyechaxun" style="padding-top:0;">
+			<div class="focus-details" id="prArea">
+            <form method="post" action="${webPath}/certificate/query.htm" id="myForm" >
+				<div style="text-align:center;"><img src="${webPath}/resource/front/images/search-img.png" style="border:none;"/><span style="font-size: 30px;">其他证件查询</span></div>
+				<div>
+					<div class="search-box-wrap" style="text-align: center;">
+						<div class="search-area">
+							<input id="certiinput" placeholder="请输入证件号" name="cardNumber" /> <a class="block-a-btn cetisearch-btn" href="javaScript:submit2();"  style="color:#fff;text-decoration: none;" >搜索</a>
+						</div>
+					</div>
+					<div style="margin-left: 115px;">
+						<!-- <p><input type="radio" checked="checked" name="types" value="teachercard"><label>安全生产培训教师资格证</label></p>
+						<p><input type="radio" name="types" value="safetymanageCard"><label>生产经营单位安全生产管理人员安全资格证书</label></p> -->
+						<p><label><input type="radio" checked="checked" name="types" value="safetymanageCardNew">  生产经营单位主要负责人安全管理人员安全生产知识和管理能力考核合格证<em style="color:#ff0000">(请输入身份证号码查询)</em></label></p>
+					</div>
+                    <div>  由于近期网络服务不稳定,给用户带来不便。中心将尽力减少给用户造成的损失和影响。联系电话：027-87812940 </div>
+				</div>
+		 </form>
+		    <div style="margin-top:60px;">
+			<div class="head-title"><h1><span></span>证件样式</h1></div>
+			    <div class="small-img-wrap">
+					<ul class="mgt-10 clear" style="padding:0;">
+						<li><img src="${webPath}/resource/front/images/zs_ag_1.jpg" title="安管合格证"/></li>
+						<li><img src="${webPath}/resource/front/images/zs_ag_2.jpg" title="安管合格证"/></li>
+					</ul>
+				</div>
+		    </div>
+       	</div>
+		</div>
+	<#elseif category.id==66>
+			<div class="artcle" id="wangluopeixunxueyuan">
+				<a href="http://www.hbaqscwlxy.com" target="_blank">湖北省安全生产网络培训学院</a>
+			</div>
+	<#elseif category.id==67>
+			<div class="artcle" id="zongheguanlipingtai">
+				<a href="http://27.17.10.114:8081/hbsemis/page/NewIndex.aspx" target="_blank">湖北省安全生产培训综合管理平台</a>
+			</div>
+	<#elseif category.id==68>
+			<div class="artcle" id="zhurenxinxiang">
+				<a href="https://mail.qq.com/cgi-bin/frame_html" target="_blank" style="color: blue;font-size: 16px;font-weight: bold;">1776673206@qq.com</a>
+			</div>
+	<#elseif category.id==70>
+			<#if (newsPage.rows?exists)&&(newsPage.rows?size>0)>
+                       <#list newsPage.rows as wj_diaocha>
+                        <div class="lists">
+                          <a href="http://localhost:8081${wj_diaocha.wjUrl}" target="_blank">${html.delHTMLTag(wj_diaocha.title,30)}</a>
+                          <span class="time">${wj_diaocha.creatTime?string('yyyy-MM-dd')}</span>
+					   <div class="clear"></div>
+                        </div>
+                       </#list>
+                       <div class="index_cen_righ_fy" >
+                	<ul>
+                    	<li><a href="${webPath}/news/list/${categoryid}/1.htm">首页 </a></li>
+	                    <li><a href="${webPath}/news/list/${categoryid}/${newsPage.before}.htm">上一页</a></li>
+                    	<#list newsPage.pageListStart..newsPage.pageListEnd as i>
+                    	  <li style="<#if page==i>background: #e14730;</#if>"><a href="${webPath}/news/list/${categoryid}/${i}.htm" >${i}</a></li>
+                    	</#list>
+                    	<li><a href="${webPath}/news/list/${categoryid}/${newsPage.next}.htm">下一页</a></li>
+	                    <li><a href="${webPath}/news/list/${categoryid}/${newsPage.count_page}.htm">尾页</a></li>
+                    </ul>
+                    </div>
+                   <#else>
+                   <h1 style="text-align: center;font-size: 24px;">暂时没有数据</h1>
+                 </#if>
+	<#else>
+   			<#if (newsPage.rows?exists)&&(newsPage.rows?size>0)>
+               <#list newsPage.rows as news>
+	                <div class="lists">
+	                  <a href="${webPath}/news/detail/${news.id}.htm">${html.delHTMLTag(news.title,30)}</a>
+	                  <span class="time">${news.time?string("yyyy/MM/dd")}</span>
+					  <div class="clear"></div>
+	                </div>
+               </#list>
+	               <div class="index_cen_righ_fy" >
+			        	 <ul>
+			            	  <li><a href="${webPath}/news/list/${categoryid}/1.htm">首页 </a></li>
+			                  <li><a href="${webPath}/news/list/${categoryid}/${newsPage.before}.htm">上一页</a></li>
+			            	  <#list newsPage.pageListStart..newsPage.pageListEnd as i>
+			            	     <li style="<#if page==i>background: #e14730;</#if>"><a href="${webPath}/news/list/${categoryid}/${i}.htm" >${i}</a></li>
+							  </#list>
+							 	<li><a href="${webPath}/news/list/${categoryid}/${newsPage.next}.htm">下一页</a></li>
+							    <li><a href="${webPath}/news/list/${categoryid}/${newsPage.count_page}.htm">尾页</a></li>
+						 </ul>
+				  </div>
+			  <#else>
+				<h1 style="text-align: center;font-size: 24px;">暂时没有数据</h1>
+			</#if>
+     </#if>
+     </div>
+      </div>
+      </div>
+     </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+<script>
+$(function(){
+	var url = '';
+	var id = ''
+	if(${category.id} == 54){  	    // 中心概况
+		url = '${webPath}/news/newsContent.htm?categoryId=54';
+		id = 'zhongxingaikuang';
+		$_ajax(url,id);
+	}else if(${category.id} == 56){ // 人员机构
+		url = '${webPath}/news/personList.htm?';
+		id = 'renyuanjigou';
+		person_ajax(url,id);
+	}else if(${category.id} == 55){ // 办证流程
+		url = '${webPath}/news/newsContent.htm?categoryId=55';
+		id = 'banzhengliucheng';
+		$_ajax(url,id);
+	}else if(${category.id} == 57){ // 科室职责
+		url = '${webPath}/news/newsContent.htm?categoryId=57';
+		id = 'keshizhize';
+		$_ajax(url,id);
+	}
+})
+// ajax(中心概况、办证流程、科室职责)
+function $_ajax(url,id){
+	$.ajax({
+		url:url,
+		type:"post",
+		data:{
+		},
+		dataType:"html",
+		success:function(data){
+			$('#'+id ).html(data);
+		}
+	});
+}
+
+// ajax(人员机构)
+function person_ajax(url,id){
+	$.ajax({
+		url:url,
+		type:"post",
+		dataType:"html",
+		success:function(data){
+			var result = eval('(' + data + ')');
+			if( result.code === "success" ){
+				var html = '';
+				var list = result.listData;
+				var leng = result.listData.length;
+	       		for( var i = 0; i < leng; i++ ){
+	       			var person = list[i];
+	       			html += '<tr>';
+	       			html += '<td class="label">姓名:</td>';
+	       			html += '<td>'+ person.name +'</td>';
+	       			html += '<td rowspan="4" width="90" style="padding:0;">';
+	       			if('1'==person.picture_state){
+	       				html += '<img style="height:165px;width:120px;margin:0;" src="${webPath}'+ person.picture_url +'">';
+	       			}else{
+	       				html += '<img style="height:165px;width:120px;margin:0;" src="${webPath}/resource/front/images/zwtx.jpg">';
+	       			}
+	       			html += '</td>';
+	       			html += '</tr><tr>';
+	       			html += '<td class="label">性别:</td>	';
+					if('1'==person.sex){
+						html += '<td>男</td>';
+	       			}else{
+	       				html += '<td>女</td>'; 
+	       			}
+	       			html += '</tr><tr>';
+	       			html += '<td class="label">职务:</td>';   
+	       			html += '<td>'+ person.job +'</td>';   
+	       			html += '</tr><tr>';  
+	       			html += '<td class="label">职称:</td>';                 
+	       			html += '<td>'+ person.position+ '</td></tr>';
+	       			html += '<tr><td colspan="3" height="10" style="border:none;padding:0;"></td></tr>';
+	       		}
+       			$("#renyuanjigou").html( html );
+			}
+		}	
+	});	
+}
+      
+//特种证件查询
+function submit(){
+	var certiinput = $("#certiinput").val();
+	if(certiinput==""){
+		layer.alert('证件号不能为空!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	  }
+	if(certiinput.length < 15){
+		layer.alert('请输入正确的证件号!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	}
+	 $("#myForm").submit();
+}
+//其他证件查询
+function submit2(){
+	if($("#certiinput").val()==""){
+		layer.alert('证件号不能为空!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	  }
+	 $("#myForm").submit();
+}
+</script>
+</body>
+</html>

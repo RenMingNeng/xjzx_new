@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+         <div class="location">您当前位置： 新闻中心&gt;<#if category??><#if category.parent??>${category.parent.name!''}&gt;</#if>${category.name!''}</#if></div>
+         <div class="mgt-20">
+            <div class="fl category-box">
+              <#if (category??)&&(category.parent??)>
+                 <div class="current-category">
+                  ${category.parent.name!''} 
+                 </div>
+                   <#if (newsCategoryList?exists)&&(newsCategoryList?size>0)>
+                    <div class="list-category">
+                       <ul>
+	                      <#list newsCategoryList as category>
+	                         <li class="<#if category.id==categoryid>category-select</#if>">
+	                            <div>
+	                              <a href="${webPath}/news/list/${category.id}.htm" title="${category.name}">${html.delHTMLTag(category.name,20)}</a>
+	                            </div>
+	                         </li>
+	                      </#list>
+                      </ul>
+                    </div>
+                   </#if>
+              </#if>
+            </div>
+            <div class="fl mgl-10 max-item-box">
+               <div class="news-list-wrap">
+                  <#if (newsPage.rows?exists)&&(newsPage.rows?size>0)>
+                     <ul>
+                        <#list newsPage.rows as news>
+                         <li>
+                           <a href="${webPath}/news/detail/${news.id}.htm">${html.delHTMLTag(news.title,30)}</a>
+                           <span class="time">${news.time?string("yyyy/MM/dd")}</span>
+						   <div class="clear"></div>
+                         </li>
+                        </#list>
+                     </ul>			
+                  </#if>
+               </div>
+                <div class="index_cen_righ_fy" >
+                   <#if (newsPage.rows?exists)&&(newsPage.rows?size>0)>
+                	<ul>
+                    	<li><a href="${webPath}/news/list/${categoryid}/1.htm">首页 </a></li>
+	                    <li><a href="${webPath}/news/list/${categoryid}/${newsPage.before}.htm">上一页</a></li>
+                    	<#list newsPage.pageListStart..newsPage.pageListEnd as i>
+                    	  <li style="<#if page==i>background: #e14730;</#if>"><a href="${webPath}/news/list/${categoryid}/${i}.htm" >${i}</a></li>
+                    	</#list>
+                    	<li><a href="${webPath}/news/list/${categoryid}/${newsPage.next}.htm">下一页</a></li>
+	                    <li><a href="${webPath}/news/list/${categoryid}/${newsPage.count_page}.htm">尾页</a></li>
+                    </ul>
+                    <#else>
+                    <h1 style="text-align: center;font-size: 24px;">暂时没有数据</h1>
+                  </#if>
+                </div>
+               
+            </div>
+         </div>
+       
+     </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>

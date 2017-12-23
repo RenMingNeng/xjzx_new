@@ -1,0 +1,153 @@
+<!DOCTYPE HTML >
+<html>
+  <head>
+    <title>数据字典管理</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+    <script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript">
+    	var Q = jQuery;
+    	var selectedNode = null;
+    	var targetNode = null;
+    	Q(function(){
+    		Q("#categoryTb").datagrid({
+    			url:"${webPath}/system/category/getPage.htm",
+    			border:false,
+				toolbar:"#toolBar",
+				striped : true,
+				fit:true,
+				pageList:[1,5,10,15,20],
+				pagination:true,
+				rownumbers:true,
+				columns:[[ 
+					{field:"checkbox",checkbox:true},
+					{field:'name',title:'类型名称',width:200,sortable:true,align:'center'},
+					{field:'parent',title:'父类名称',width:200,sortable:true,align:'center',formatter:function(v){if(v){return v.name}}},
+				]],
+				onLoadSuccess:function(){
+					Q(this).datagrid("unselectAll");
+				},
+				loadFilter:function(data){
+					data.data.rows = data.data.data;
+					return data.data;
+				}
+    		});
+    	
+    	});
+    	function queryDictValue(){
+    		var queryParam = {};
+			if ($("#txtCode").val()) {
+				queryParam.name = $("#txtCode").val();
+			}
+			$("#categoryTb").datagrid("load", queryParam);
+    	}
+    	function resetQuery(){
+    		$("#txtCode").val("");
+    		queryDictValue();
+    	}
+    	function addCategory(){
+    		EasyUIExt.iframeDialog({
+				url:'${webPath}/system/category/CategorySave.htm',
+				width:400,
+				height:220,
+				title:"新增字典",
+				param:{
+					entity:null,
+					type:"add",
+					success : function(dialog,data){
+						var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+						Q("#categoryTb").datagrid("reload");
+						dialog.dialog("close");
+					}
+				}
+			});
+    	}
+    	function updateCategory(){
+    		var selected = Q("#categoryTb").datagrid("getSelections");
+    		if(selected.length != 1){
+    			top.Q.messager.alert("提示信息","请选择一条数据进行操作！");
+    			return;
+    		}
+    		EasyUIExt.iframeDialog({
+				url:'${webPath}/system/category/categoryModify.htm',
+				width:400,
+				height:319,
+				title:"修改字典",
+				param:{
+					entity:selected[0],
+					type:"update",
+					success : function(dialog,data){
+						var icon = data.code=="success"?1:2;
+					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+						Q("#categoryTb").datagrid("reload");
+						dialog.dialog("close");
+					}
+				}
+			});
+    	}
+    	
+    	function deleteCategory(){
+    		var selected = Q("#categoryTb").datagrid("getSelections");
+    		if(selected.length == 0){
+    			top.Q.messager.alert("提示信息","请选择数据！");
+    			return;
+    		}
+    		var idlist = [];
+    		for(var i=0,len=selected.length;i<len;i++){
+    			idlist.push(selected[i].id);
+    		}
+    		top.$.messager.confirm("提示信息","是否确定删除？",function(r){
+    			if(r){
+    				Q.ajax({
+		    			url : "${webPath}/system/category/delete.htm",
+		    			dataType : "json",
+		    			type:"post",
+		    			data:{
+		    				ids:idlist.join(",")
+		    			},
+		    			success:function(data){
+		    				var icon = data.code=="success"?1:2;
+						 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+		    				if(data.code=="success"){
+		    					Q("#categoryTb").datagrid("reload");
+		    				}
+		    			}
+		    		});
+    			}
+    		});
+    	}
+    	
+    </script>
+  </head>
+  
+  <body>
+  	<div class="easyui-layout" data-options="fit:true,border:false">
+  		<div data-options="region:'center',title:'动态类型管理',border:false">
+  			<table id="categoryTb"></table>
+  		</div>
+  		<div id="toolBar" class="search-toolbar">
+  			<table>
+				<tr>
+					<td class="search-label" style="width: 55px;">类型名称</td>
+					<td class="search-input"><input style="width: 95px;" id="txtCode" type="text"/></td>
+					<td><a onclick="queryDictValue();" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:false">查询</a>
+					<a onclick="resetQuery();" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+				</tr>
+	  		</table>
+	  		<div>
+	  			<a onclick="addCategory();" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+	  			<a onclick="updateCategory();" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
+	  			<a onclick="deleteCategory();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
+  			</div>
+  		</div>
+  	</div>
+  </body>
+</html>

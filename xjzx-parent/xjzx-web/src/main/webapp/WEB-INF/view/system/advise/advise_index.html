@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>留言管理</title>
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+<script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+<script type="text/javascript">
+	jQuery(function() {
+		jQuery("#adviseTb").datagrid({
+			url:'${webPath}/system/advise/getAdvisePage.htm',
+			striped : true,
+			fit:true,
+			pageList:[10,15,20,30,50],
+			pagination:true,
+			rownumbers:true,
+			toolbar:"#toolBar",
+			columns:[[
+				  {field:"checkbox",checkbox:true},
+				  {field:'title',title:'留言标题',width:250,sortable:true,align:'left'},
+		          {field:'adcontent',title:'留言内容',width:600,sortable:true,align:'left'}, 
+		          {field:'islook',title:'状态',width:100,align:'center',formatter:function(v){
+			    	  if(v=='1'){return "显   示"}else if(v=='2'){return "不显示"}else{return '待   审'} 
+			    	  }
+			      },
+			      {field:'username',title:'姓名',width:150,sortable:true,align:'center'},  
+		          {field:'phone',title:'电话',width:150,sortable:true,align:'center'},
+		          {field:'email',title:'电子邮箱',width:300,sortable:true,align:'center'},
+		          {field:'createdate',title:'留言时间',width:150,sortable:true,align:'center',formatter:EasyUIExt.formateDateTime},
+		          {field:'time',title:'回复时间',width:150,sortable:true,align:'center',formatter:EasyUIExt.formateDateTime}]],
+			onLoadSuccess:function(){
+				jQuery(this).datagrid("unselectAll");
+			},
+			loadFilter:function(data){
+				data.data.rows = data.data.data;
+				return data.data;
+			}  
+    	});
+	});
+	
+	// 查询
+	function queryDictValue() {
+		var queryParam = {};
+		if ($("#txtadcontent").val()) {
+			queryParam.adcontent = $("#txtadcontent").val();
+		}
+		if ($("#txtusername").val()) {
+			queryParam.username = $("#txtusername").val();
+		}
+		if ($("#txtphone").val()) {
+			queryParam.phone = $("#txtphone").val();
+		}
+		$("#adviseTb").datagrid("load", queryParam);
+	}
+
+	function updateAdvise() {
+		var selected = jQuery("#adviseTb").datagrid("getSelections");
+		if (selected.length != 1) {
+			top.$.messager.alert("提示信息", "请选择一条数据进行操作！");
+			return;
+		}
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/advise/loadUpdateAdvise.htm?ids='+selected[0].id,
+			width : 900,
+			height : 600,
+			title : "查看-留言管理",
+			param : {
+				type : "update",
+				entity : selected[0],
+				success : function(dialog, data) {
+					jQuery("#adviseTb").datagrid("reload");
+					dialog.dialog("close");
+				}
+			}
+		});
+	}
+	//删除信息
+	function deleteAdvise() {
+		var selected = $("#adviseTb").datagrid("getSelections");
+		if (selected.length == 0) {
+			top.$.messager.alert("提示信息", "请选择数据！");
+			return;
+		}
+		var idlist = [];
+		for (var i = 0, len = selected.length; i < len; i++) {
+			idlist.push(selected[i].id);
+		}
+		top.$.messager.confirm("提示信息", "是否确定删除？", function(r) {
+			if (r) {
+				jQuery.ajax({
+					url : "${webPath}/system/advise/deleteAdvise.htm",
+					dataType : "json",
+					type : "post",
+					data : {
+						ids : idlist.join(",")
+					},
+					success : function(data) {
+						var icon = data.code == "success" ? 1 : 2;
+						top.layer.alert(data.message, {
+							icon : icon,
+							skin : 'layer-ext-moon'
+						});
+						jQuery("#adviseTb").datagrid("reload");
+					}
+				});
+			}
+		});
+	}
+	
+	//重置
+	function resetQuery(){
+	   $("#txtadcontent").val("");
+	   $("#txtusername").val("");
+	   $("#txtphone").val("");
+		queryDictValue();
+	}
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true,border:false">
+		<div data-options="region:'center',title:'留言列表',border:false">
+			<table id="adviseTb"></table>
+		</div>
+		<div id="toolBar" class="search-toolbar">
+			<table>
+				<tr>
+					<td class="search-label" style="width: 55px;">留言内容</td>
+					<td class="search-input"><input style="width: 95px;"
+						id="txtadcontent" type="text" /></td>
+					<td class="search-label" style="width: 55px;">姓名</td>
+					<td class="search-input"><input style="width: 95px;"
+						id="txtusername" type="text" /></td>
+						<td class="search-label" style="width: 55px;">电话</td>
+					<td class="search-input"><input style="width: 95px;"
+						id="txtphone" type="text" /></td>
+					<td><a onclick="queryDictValue();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-search',plain:false">查询</a> <a
+						onclick="resetQuery();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+				</tr>
+			</table>
+			<div>
+				<a onclick="updateAdvise();" class="easyui-linkbutton"
+				data-options="iconCls:'icon-edit',plain:true">查看</a>
+				<a onclick="deleteAdvise();" class="easyui-linkbutton"
+				data-options="iconCls:'icon-remove',plain:true">删除</a> 
+			</div>
+		</div>
+	</div>
+</html>

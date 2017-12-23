@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>数据字典管理</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+    	var Q = jQuery;
+    	var selectedNode = null;
+    	var param = EasyUIExt.myOpener.param;
+    	Q(function(){
+    		//数据字典树
+    		Q("#oganizationTree").tree({
+    			url : "${webPath}/system/organization/getOrganizationTree.htm",
+				onBeforeLoad : function(node) {
+					if (node) {
+						Q("#oganizationTree").tree("options").url = "${webPath}/system/organization/getOrganizationTree.htm?pid=" + node.attributes.id;
+					}
+				},
+				loadFilter : function(data) {
+					if (data.code == "success") {
+						return data.data;
+					} else {
+						return [];
+					}
+				},
+				onClick : function(node) {
+					selectedNode = node;
+				},
+				onDblClick : function(node) {
+					selectedNode = node;
+					submitForm();
+				}
+			});
+    	});
+    	function submitForm(){
+    		if(selectedNode == null){
+    			top.Q.messager.alert("提示信息","请选择分类");
+    			return;
+    		}
+    		param.success(EasyUIExt.myOpener.dialog,selectedNode);
+    	}
+    </script>
+  </head>
+  
+  <body>
+  	<ul id="oganizationTree"></ul>
+  	<div class="dialog-button">
+    	<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+  		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+    </div>
+  </body>
+</html>

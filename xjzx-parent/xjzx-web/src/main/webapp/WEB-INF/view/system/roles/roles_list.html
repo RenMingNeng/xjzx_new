@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>角色管理</title>
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+    <script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript">
+        $(function(){
+        	jQuery("#rolesTb").datagrid({
+    			striped : true,
+    			fit:true,
+    			pageList:[10,15,20,30,50],
+    			pagination:true,
+    			rownumbers:true,
+    			toolbar:"#toolBar",
+    			columns:[[
+					  {field:"checkbox",checkbox:true},
+  			          {field:'roleKey',title:'角色Key',width:120,sortable:true,align:'center'},    
+  			          {field:'name',title:'角色名称',width:200,sortable:true,align:'center'},    
+  			          {field:'mark',title:'角色描述',width:300,align:'center'},
+  			        {field:'addTime',title:'新增日期',width:250,sortable:true,align:'center',formatter:EasyUIExt.formateDateTime}
+    			]],
+    			onLoadSuccess:function(){
+					jQuery(this).datagrid("unselectAll");
+				},
+				loadFilter:function(data){
+					data.data.rows = data.data.data;
+					return data.data;
+				}  
+        	});
+			queryDictValue();
+        })
+    	//加载新增页面
+      	function addRoles(){
+      		EasyUIExt.iframeDialog({
+      			url:'${webPath}/system/roles/rolesEdit.htm',
+      			width:400,
+      			height:300,
+      			title:"新增-角色",
+      			param:{
+      				type:"add",
+      				success : function(dialog,data){
+      					var icon = data.code=="success"?1:2;
+      				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+      				 	jQuery("#rolesTb").datagrid("reload");
+      					dialog.dialog("close");
+      				}
+      			}
+      		});
+      	}
+       function updateRoles(){
+    	  var selections = jQuery("#rolesTb").datagrid("getSelections");
+    	  if(selections.length != 1){
+  			top.$.messager.alert("提示信息","请选择一条数据进行操作！");
+  			return;
+  		  }
+    	   var res = selections[0];
+	  		if(res.id == 1){
+	  			$.messager.alert("提示信息","禁止修改超管角色！");
+	  			return;
+	  		}
+    	  EasyUIExt.iframeDialog({
+   			url:'${webPath}/system/roles/rolesEdit.htm',
+   			width:400,
+   			height:300,
+   			title:"修改-角色",
+   			param:{
+   				type:"update",
+   				entity:selections[0],
+   				success : function(dialog,data){
+   					var icon = data.code=="success"?1:2;
+   				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+   				 	jQuery("#rolesTb").datagrid("reload");
+   					dialog.dialog("close");
+   				}
+   			}
+   		});
+      }
+     function deleteRoles(){
+    	  var selections = jQuery("#rolesTb").datagrid("getSelections");
+    	  if(selections.length < 1){
+  			top.$.messager.alert("提示信息","请选择数据进行操作！");
+  			return;
+  		  }
+    	  var idlist = [];
+    	  for(var i in selections){
+    		  idlist.push(selections[i].id);
+    	  }
+    	   var res = idlist.indexOf(1);
+	  		if(res == 0){
+	  			$.messager.alert("提示信息","超管角色禁止删除！");
+	  			return;
+	  		}
+    		top.$.messager.confirm("提示信息","是否确定删除？",function(r){
+     			if(r){
+    			   jQuery.ajax({
+    		   			url : "${webPath}/system/roles/deleteRoles.htm",
+    		   			dataType : "json",
+    		   			type:"post",
+    		   			data:{
+    		   				ids:idlist.join(",")
+    		   			},
+    		   			success:function(data){
+    		   				var icon = data.code=="success"?1:2;
+    					 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+    					 	jQuery("#rolesTb").datagrid("reload");
+    		   			}
+    		   	   });
+     		  }
+     	   });
+     }
+     function queryDictValue(){
+    	 jQuery("#rolesTb").datagrid("options").url = "${webPath}/system/roles/showRolesJson.htm";
+    	 var queryParam = {};
+    	 if($("#txtCode").val()){
+    		 queryParam.roleKey = $("#txtCode").val();
+    	 }if($("#txtValue").val()){
+    		 queryParam.name = $("#txtValue").val();
+    	 }
+    	 jQuery("#rolesTb").datagrid("load",queryParam)
+     }
+     function resetQuery(){
+    	 $("#txtCode").val("");
+    	 $("#txtValue").val("");
+    	 queryDictValue();
+     }
+     function setResource(){
+      var selections = jQuery("#rolesTb").datagrid("getSelections");
+   	  if(selections.length !=1){
+ 			top.$.messager.alert("提示信息","请选择一条数据进行操作！");
+ 			return;
+ 	  }
+   	    var res = selections[0];
+		if(res.id == 1){
+			$.messager.alert("提示信息","禁止修改超管角色！");
+			return;
+		}
+   	  EasyUIExt.iframeDialog({
+			url:'${webPath}/system/resource/setResource.htm',
+			height:400,
+			width:250,
+			title:"设置权限",
+			param:{
+				type:"set",
+				entity:selections[0],
+				success : function(dialog,data){
+					var icon = data.code=="success"?1:2;
+				 	top.layer.alert(data.message, {icon: icon,skin: 'layer-ext-moon'});
+					dialog.dialog("close");
+				}
+			}
+		});
+     }
+    </script>
+</head>
+<body>
+     <div class="easyui-layout" data-options="border:false,fit:true">
+         <div data-options="region:'center',border:false">
+             <table id="rolesTb"></table>
+         </div>
+     </div>
+      <div id="toolBar" class="search-toolbar">
+        <table>
+			<tr>
+				<td class="search-label" style="width: 55px;">角色key</td>
+				<td class="search-input"><input style="width: 95px;" id="txtCode" type="text"/></td>
+				<td class="search-label" style="width: 55px;">角色名称</td>
+				<td class="search-input"><input style="width: 95px;" id="txtValue" type="text"/></td>
+				<td><a onclick="queryDictValue();" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:false">查询</a>
+				<a onclick="resetQuery();" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+			</tr>
+	  		</table>
+		<div>
+	      <a onclick="addRoles();" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+		  <a onclick="updateRoles();" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
+		   <a onclick="setResource();" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">设置权限</a>
+		　<a onclick="deleteRoles();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a>
+		</div>
+	</div>
+</body>
+</html>

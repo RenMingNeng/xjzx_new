@@ -1,0 +1,624 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+
+<style>
+.ztlm li{float: left;width:360px;height:90px;margin-left:10px;} 
+.lanmu-4-1 img{
+	width: 180px;
+	height: 75px;
+}     
+.video_container{
+	height:207px;   
+	width:100%;
+	position: relative;
+	overflow: hidden;
+} 
+.video_container_info{
+	position: absolute;
+	line-height:30px;
+	top:-30px;
+	background: rgba(0,0,0,.5);
+	color:#fff;
+	width:10000px;
+	overflow: hidden;
+}
+.video_container_info p{
+	word-break: break-all;
+	padding:0 10px;
+}
+.lanmu-3 .list div{
+	display: block;
+}
+.lanmu-3 .list .list-container{
+	display: none;
+}
+.list-container{
+	padding: 6px 15px;
+}
+</style>                             
+</head>
+
+<body>
+${httpInclude.include("/top.htm")}       
+<div class="main">
+  <div class="cl">
+	<div class="lanmu-1">
+		<ul class="switch-con">
+			<#if (jdList?exists)&&(jdList?size>0)> 
+			<#list jdList as jdNews>
+				<li>
+					<a target="_blank" href="${webPath}/news/detail/${jdNews.id}.htm">
+					<img src="${webPath}${jdNews.url}"></a>
+					<p class="pic-info">&nbsp;&nbsp;${html.delHTMLTag(jdNews.title,18)}</p>
+				</li>
+			</#list> 
+			<#else>
+				<h3 style="color: red">暂无图片新闻</h3>
+			</#if>
+		</ul>
+		<ol>
+			<li class="active"></li>
+			<li></li>
+			<li></li>
+		</ol>
+	</div>
+	<div class="lanmu-2">
+      <div class="lanmu-5-1">
+        <!-- <div class="lanmu-5-2"><a href="${webPath}/news/list/52.htm" target="_blank" class="more_link">安监要闻</a></div> -->
+        <div class="lanmu-5-2"><a href="${webPath}/news/centerNewsList.htm" target="_blank" class="more_link">中心新闻</a></div>
+      </div>
+      <div class="lanmu-6-mian">
+        <!-- <#if (ajywNewsList?exists)&&(ajywNewsList?size>0)>
+   	       <ul>
+   	         <#list ajywNewsList as ajywNews>
+   	            <li>
+            	  <span class="lanmu-6-mian-1">
+   	                <a href="${webPath}/news/detail/${ajywNews.id}.htm" target="_blank">${html.delHTMLTag(ajywNews.title,16)}</a>
+   	              </span>
+   	               <span class="lanmu-6-mian-2">${ajywNews.time?string('yyyy-MM-dd')}</span>
+   	            </li>
+   	         </#list>
+   	       </ul>
+       <#else>
+	     	<span style="font-size: 18px;color: red">暂无数据</span>
+        </#if> -->
+        <#if (dynamicList?exists)&&(dynamicList?size>0)>
+       	 	<#list dynamicList as dyNews>
+   		 	<dl>
+                <dt>
+	               	<span class="lanmu-6-mian-1">
+	                  <a href="${webPath}/news/detail/${dyNews.id}.htm" target="_blank">${html.delHTMLTag(dyNews.title,17)}</a>
+	                </span>
+                </dt>
+                <dd>
+                <span class="lanmu-6-mian-2">${dyNews.time?string('yyyy-MM-dd')}</span>
+                </dd>
+         	</dl>
+             </#list>
+         <#else>
+	     	<span style="font-size: 18px;color: red">暂无数据</span>
+       	 </#if>
+      </div>
+    </div>
+    <div class="lanmu-3" id="lanmu-3">
+      <ul>
+        <!-- <li class="active"><a href="${webPath}/news/list/49.htm" target="_blank" class="more_link">中心新闻</a></li> -->
+        <li class="active"><a href="${webPath}/news/dynamicList.htm" target="_blank" class="more_link">工作动态</a></li>
+        <li><a href="${webPath}/news/publicNoticeList.htm" target="_blank" class="more_link">公示公告</a></li>
+      </ul>
+      <div class="list">
+        <!-- <div class="active">
+       	 <#if (dynamicList?exists)&&(dynamicList?size>0)>
+       	 	<#list dynamicList as dyNews>
+   		 	<dl>
+                <dt>
+                  <a href="${webPath}/news/detail/${dyNews.id}.htm" target="_blank">${html.delHTMLTag(dyNews.title,17)}</a>
+                </dt>
+                <dd>${dyNews.time?string('yyyy-MM-dd')}</dd>
+         	</dl>
+             </#list>
+         <#else>
+	     	<span style="font-size: 18px;color: red">暂无数据</span>
+       	 </#if>
+        </div> -->
+		<div class="active list-container" style="padding:0;">
+       	 <#if (tzNewsList?exists)&&(tzNewsList?size>0)>
+       	 	<#list tzNewsList as tzNews>
+   		 	<dl>
+                <dt>
+                  <a href="${webPath}/news/detail/${tzNews.id}.htm" target="_blank">${html.delHTMLTag(tzNews.title,17)}</a>
+                </dt>
+                <dd>${tzNews.time?string('yyyy-MM-dd')}</dd>
+         	</dl>
+             </#list>
+         <#else>
+	     	<span style="font-size: 18px;color: red">暂无数据</span>
+       	 </#if>
+        </div>     
+        <div class="list-container" style="padding:0;">
+   	 	<#if (ggNewsList?exists)&&(ggNewsList?size>0)>
+	         <#list ggNewsList as ggNews>
+	    		<dl>
+	            <dt>
+	              <a href="${webPath}/news/detail/${ggNews.id}.htm" target="_blank">${html.delHTMLTag(ggNews.title,17)}</a>
+	            </dt>
+	            <dd>${ggNews.time?string('yyyy-MM-dd')}</dd>
+	     		</dl>
+	         </#list>
+        <#else>
+	     	<span style="font-size: 18px;color: red">暂无数据</span>
+      	</#if>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div  class="DivH20 clear"></div>
+  <div class="lanmu-4">
+    <div class="lanmu-4-1"><a href="${webPath}/organ/list.htm" target="_blank"><img src="${webPath}/resource/front/images/v2/peixun_1.jpg" alt=""/></a></div>
+    <div class="lanmu-4-1"><a href="${webPath}/teacher/list.htm" target="_blank"><img src="${webPath}/resource/front/images/v2/peixun_6.jpg" alt=""/></a></div>
+    <div class="lanmu-4-1"><a href="${webPath}/exam/list.htm" target="_blank"><img src="${webPath}/resource/front/images/v2/peixun_2.jpg" alt=""/></a></div>
+    <div class="lanmu-4-1"><a href="${webPath}/proctor/list.htm" target="_blank"><img src="${webPath}/resource/front/images/v2/peixun_3.jpg" alt=""/></a></div>
+    <div class="lanmu-4-1"><a href="${webPath}/evaluate/list.htm" target="_blank"><img src="${webPath}/resource/front/images/v2/peixun_4.jpg" alt=""/></a></div>
+    <div class="lanmu-4-1" style="margin-right:0;"><a href="http://bm.51hse.cn" target="_blank"><img src="${webPath}/resource/front/images/v2/peixun_5.jpg" alt=""/></a></div>
+  </div>
+  <div  class="DivH20 clear"></div>
+  <div class="lanmu-5">
+    <div class="lanmu-5-1">
+      <div class="lanmu-5-2"><a href="${webPath}/news/list/64.htm" target="_blank" class="more_link">网上服务</a></div>
+    </div>
+    <div class="lanmu-5-3">
+      <div class="lanmu-5-4-2">
+        <div><a href="${webPath}/news/list/64.htm"><img src="${webPath}/resource/front/images/v2/index_76.jpg" width="320" height="68"></a></div>
+        <div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="15" align="center">&nbsp;</td>
+              <td height="38" align="center"><a href="${webPath}/certificate/index.htm" target="_blank"><img src="${webPath}/resource/front/images/v2/index_06.png" width="128" height="38"></a></td>
+              <td align="center"><a href="${webPath}/certificate/index2.htm" target="_blank"><img src="${webPath}/resource/front/images/v2/index_05.png" width="128" height="38"></a></td>
+              <td width="15" height="38" align="center">&nbsp;</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="lanmu-5-5"></div>
+      <div class="lanmu-5-4"><a href="http://www.hbaqscwlxy.com"><img src="${webPath}/resource/front/images/v2/index_32.jpg" width="320" height="120" alt=""/></a></div>
+      <div class="lanmu-5-5"></div>
+      <div><a href="http://27.17.10.114:8081/hbsemis/page/NewIndex.aspx"><img src="${webPath}/resource/front/images/v2/index_35.jpg" width="320" height="120" alt=""/></a></div>
+    </div>
+  </div>
+  <div  class="DivH20 clear"></div>
+  <div class="lanmu-6">
+    <div class="lanmu-6-2" style="height:250px;">
+      <div class="lanmu-6-2-1">
+        <div  class="lanmu-5-2"><a href="${webPath}/news/list/74.htm" target="_blank" class="more_link">宣传报道</a></div>          
+      </div>
+     
+      <!-- 宣传报道：如果视频存在则显示视频，不存在则显示列表 -->
+		<#if (xcbdVideo?exists)>
+			<div class="active video_container"> 
+				<div id="xcbd" style="width:100%;height:100%;"></div>
+      			<input type="hidden" id="xcbdVideo" value="${xcbdVideo.videoUrl}">
+      			<div  class="video_container_info"><p>视频简介：${xcbdVideo.video_info}</p></div>
+      		</div>
+      	<#elseif (xcbdcList?exists)&&(xcbdcList?size>0)>
+      	 <div class="lanmu-6-mian">
+		     <div class="active">
+				<#list xcbdcList as xcbd>
+					<ul>
+			          <li><span class="lanmu-6-mian-1"><a href="${webPath}/news/detail/${xcbd.id}.htm">${html.delHTMLTag(xcbd.title,17)}</a></span>
+			           <span class="lanmu-6-mian-2"> ${xcbd.time?string('yyyy-MM-dd')}</span></li>
+			        </ul>
+		        </#list>
+		      </div>
+	      </div>
+        </#if>
+      
+    </div>
+    <div class="lanmu-6-2" style="height:250px;">
+      <div class="lanmu-6-2-1" style="float: none;">
+        <div  class="lanmu-5-2"><a href="${webPath}/news/list/75.htm" target="_blank" class="more_link">政策解读</a></div>
+      </div>
+      
+      <!-- 政策解读：如果视频存在则显示视频，不存在则显示列表 -->
+		<#if (zcjdVideo?exists)>
+			<div class="active video_container"> 
+				<div id="zcjd" style="width:100%;height:100%;"></div>
+      			<input type="hidden" id="zcjdVideo" value="${zcjdVideo.videoUrl}">
+      			<div class="video_container_info"><p>视频简介：${zcjdVideo.video_info}</p></div>
+      		</div>
+        <#elseif (zcjdList?exists)&&(zcjdList?size>0)>
+        <div class="lanmu-6-mian">
+	     	<div class="active">
+				<#list zcjdList as zcjd>
+				<ul>
+		          <li><span class="lanmu-6-mian-1"><a href="${webPath}/news/detail/${zcjd.id}.htm">${html.delHTMLTag(zcjd.title,16)}</a></span>
+		           <span class="lanmu-6-mian-2"> ${zcjd.time?string('yyyy-MM-dd')}</span></li>
+		        </ul>
+		        </#list>
+	        </div>
+        </div>
+        </#if>
+      
+    </div>
+    
+    <div class="lanmu-3" id="lanmu-6">
+      <ul>
+        <li class="active"><a href="${webPath}/news/list/42.htm" target="_blank" class="more_link">安全文化</a></li>
+        <li><a href="${webPath}/news/list/42.htm" target="_blank" class="more_link">安全知识</a></li>
+        <li><a href="${webPath}/news/list/44.htm" target="_blank" class="more_link">案例警示</a></li>
+      </ul>
+      <div class="list" style="padding:0;">
+      <!-- 安全文化：如果视频存在则显示视频，不存在则显示列表 -->
+      	<#if (aqwhVideo?exists)>
+      		<div class="active video_container list-container" style="padding:0;"> 
+      			<div id="aqwh"  style="width:100%;height:100%;"></div>
+      			<input type="hidden" id="aqwhVideo" value="${aqwhVideo.videoUrl}">
+      			<div class="video_container_info"><p>视频简介：${aqwhVideo.video_info}</p></div>
+      		</div>
+      	<#else>	
+      		<div class="active list-container">
+				<#if (aqwhList?exists)&&(aqwhList?size>0)>
+					<#list aqwhList as aqwh>
+						<dl>
+				          <dt><a href="${webPath}/news/detail/${aqwh.id}.htm">${html.delHTMLTag(aqwh.title,17)}</a></dt>
+				           <dd class="lanmu-6-mian-2"> ${aqwh.time?string('yyyy-MM-dd')}</dd>
+			        	</dl>
+			        </#list>
+		        </#if>
+      	   </div>
+      	</#if>
+        <div class="list-container">
+			<#if (aqzsList?exists)&&(aqzsList?size>0)>
+				<#list aqzsList as aqzs>
+					<dl>
+			          <dt><a href="${webPath}/news/detail/${aqzs.id}.htm">${html.delHTMLTag(aqzs.title,17)}</a></dt>
+			           <dd class="lanmu-6-mian-2"> ${aqzs.time?string('yyyy-MM-dd')}</dd>
+		        	</dl>
+		        </#list>
+	        </#if>
+      	</div>
+        <#if (aqwhVideo?exists)>
+      		<div class="active video_container list-container" style="padding:0;"> 
+      			<div id="aljs"  style="width:100%;height:100%;"></div>
+      			<input type="hidden" id="aljsVideo" value="${aqwhVideo.videoUrl}">
+      			<div class="video_container_info"><p>视频简介：${aqwhVideo.video_info}</p></div>
+      		</div>
+      	<#else>
+	        <div class="list-container">
+				<#if (sgalList?exists)&&(sgalList?size>0)>
+					<#list sgalList as sgal>
+						<dl>
+				          <dt><a href="${webPath}/news/detail/${sgal.id}.htm">${html.delHTMLTag(sgal.title,17)}</a></dt>
+				           <dd class="lanmu-6-mian-2"> ${sgal.time?string('yyyy-MM-dd')}</dd>
+			        	</dl>
+			        </#list>
+			    <#else>
+		     		<span style="font-size: 18px;color: red">暂无数据</span>
+		        </#if>
+	      	</div>
+      	</#if>
+      </div>
+    </div>
+  </div>
+  <!-- 主题栏目   -->
+  <#if (ztlmList?exists)&&(ztlmList?size>0)>
+	  <div  class="DivH20 clear"></div>
+	  <div  class="lanmu-7" style="height:auto;width:auto;">
+	    <ul style="overflow: hidden;margin-left:-10px;" class="ztlm">
+	      <#list ztlmList as ztlm>
+	      	<li><a href="${webPath}/normal/list/${ztlm.id}/1.htm" target="_blank"><img src="${webPath}${ztlm.others}" width="360" height="90"></a></td>
+	      </#list>
+	    </ul>
+	  </div>
+  </#if>
+  <div  class="DivH20 clear"></div>
+  <div class="lanmu-6">
+	<div class="lanmu-6-2">
+		<div class="lanmu-6-2-1">
+			<div class="lanmu-5-2"><a href="${webPath}/news/list/54.htm" target="_blank" class="more_link">信息公开</a></div>
+		</div>
+		<div class="lanmu-6-mian">
+			<table width="323" border="0" cellpadding="0" cellspacing="0" style="margin-top: 5px">
+				<tr>
+					<td width="165" height="85" align="left" valign="middle"><a href="${webPath}/news/list/54.htm" target="_blank">
+						<img src="${webPath}/resource/front/images/v2/xinxi_1.jpg" width="157" height="62" /></a></td>
+					<td width="165" height="85" align="right"><a href="${webPath}/news/list/56.htm" target="_blank">
+						<img src="${webPath}/resource/front/images/v2/xinxi_2.jpg" width="157" height="62" /></a></td>
+				</tr>
+				<tr>
+					<td width="165" height="85"><a href="${webPath}/news/list/57.htm" target="_blank">
+						<img src="${webPath}/resource/front/images/v2/xinxi_3.jpg" width="157" height="62" /></a></td>
+					<td width="165" height="85" align="right"><a href="${webPath}/news/list/55.htm" target="_blank">
+						<img src="${webPath}/resource/front/images/v2/xinxi_4.jpg" width="157" height="62" /></a></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="lanmu-6-2">
+      <div class="lanmu-6-2-1">
+        <div class="lanmu-5-2"><a href="${webPath}/question/interact.htm?type=1&page=1" target="_blank" class="more_link">公众互动</a></div>
+      </div>
+      <div class="lanmu-6-mian">
+        <table width="325px" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td height="45" colspan="3" align="left" valign="middle"><span  class="font01">湖北省安全生产宣传教育中心网上服务 </span></td>
+          </tr>
+          <tr>
+            <td width="75" rowspan="2" align="center"><img src="${webPath}/resource/front/images/v2/index_68.png" width="60" height="60"></td>
+            <td width="20" height="30" align="center"><img src="${webPath}/resource/front/images/v2/index_73.jpg" width="8" height="7"></td>
+            <td width="230" height="30">地址：武汉市武昌区武珞路360号</td>
+          </tr>
+          <tr>
+            <td width="20" height="20" align="center"><img src="${webPath}/resource/front/images/v2/index_73.jpg" width="8" height="7"></td>
+            <td width="230" height="20">电话：027-67120959</td>
+          </tr>
+          <tr>
+            <td height="1" colspan="3">&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="40" colspan="3">
+             <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td width="108px" height="41" align="left"><a href="${webPath}/advice/adviceList.htm?page=1" target="_blank"><img src="${webPath}/resource/front/images/v2/index_70.jpg" width="105" height="36"></a></td>
+                  <td width="108px" height="41" align="center"><a href="${webPath}/question/interact.htm?type=2" target="_blank"><img src="${webPath}/resource/front/images/v2/index_71.jpg" width="105" height="36"></a></td>
+                  <td width="108px" height="41" align="right"><a href="${webPath}/question/interact.htm?type=1&page=1" target="_blank"><img src="${webPath}/resource/front/images/v2/index_72.jpg" width="105" height="36"></a></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="lanmu-6-3">
+      <div class="lanmu-6-2-1">
+        <div  class="lanmu-5-2"><a href="${webPath}/news/materialList.htm" target="_blank" class="more_link">下载</a></div>
+      </div>
+      <div class="lanmu-6-mian">
+		<#if (zlxzList?exists)&&(zlxzList?size>0)>
+			<#list zlxzList as zlxz>
+				<ul>
+       			  <li><span class="lanmu-6-mian-1"><a href="${webPath}/news/detail/${zlxz.id}.htm">${html.delHTMLTag(zlxz.title,17)}</a></span>
+       			  <span class="lanmu-6-mian-2"> ${zlxz.time?string('yyyy-MM-dd')}</span></li>
+      		   </ul>
+	        </#list>
+	     <#else>
+	     	<span style="font-size: 18px;color: red">暂无可下载的资料</span>
+        </#if>
+   	 </div>
+   	 
+    </div>
+  </div>
+  <div  class="DivH20 clear"></div>
+  <div class="peixun">
+    <div class="peixun-02">
+      <div class="peixun-03">
+        <a href="${webPath}/information/list.htm">培训资料</a>
+      </div>
+      <div class="peixun-051">
+        <a href="javascript:;" class="left">
+          <img src="${webPath}/resource/front/images/v2/peixun_18.jpg" height="36" width="20" alt="">
+        </a>
+        <div>
+	        <#if (traindataList?exists)&&(traindataList?size>0)>
+	        	<ul id="peixun">
+	             <#list traindataList as taindata>
+	            <li title="${taindata.name}">
+	              <img src="${webPath}${taindata.url}">
+	              <div><a href="${webPath}/information/detail/${taindata.id}.htm">${html.delHTMLTag(taindata.name,4)}</a></div>
+	            </li>
+	            </#list>
+	          </ul>
+	        </#if>
+        </div>
+        <a href="javascript:;" class="right">
+          <img src="${webPath}/resource/front/images/v2/peixun_21.jpg" height="36" width="20" alt="">
+        </a>
+      </div>
+      <div class="peixun-04">
+        <a href="${webPath}/information/list.htm">更多</a>
+      </div>
+    </div>
+  </div>
+  <div  class="DivH20 clear"></div>
+  <div class="link-01">
+    <table width="100%" border="0" cellpadding="0">                 
+      <tr>
+        <td width="125" align="left" style="color:#333333;"><h4>友情链接</h4></td>
+        <td width="250"><a href="http://www.chinasafety.gov.cn/" target="_blank">国家安全生产监督管理总局</a></td>
+        <td width="250"><a href="http://www.hubeisafety.gov.cn/" target="_blank">湖北省安全生产监督管理局</a></td>
+        <td width="443"><form name="form" id="form">
+            <select name="jumpMenu" id="jumpMenu">
+              <option selected value="">市州安全生产监督管理局</option>
+              <option value="http://www.whsafety.gov.cn/">武汉市安全生产监督管理局</option>
+              <option value="http://www.hssafety.gov.cn/">黄石市安全生产监督管理局</option>
+              <option value="http://www.xfsafety.gov.cn/">襄樊市安全生产监督管理局</option>
+              <option value="http://www.jzsafety.gov.cn/">荆州市安全生产监督管理局</option>
+              <option value="http://ajj.yichang.gov.cn/">宜昌市安全生产监督管理局</option>
+              <option value="http://ajj.shiyan.gov.cn/">十堰市安全生产监督管理局</option>
+              <option value="http://www.xgsafety.com/">孝感市安全生产监督管理局</option>
+              <option value="http://www.jmajj.gov.cn/">荆门市安全生产监督管理局</option>
+              <option value="http://ezajj.ezhou.gov.cn/index.aspx">鄂州市安全生产监督管理局</option>
+              <option value="http://www.hgajj.gov.cn/">黄冈市安全生产监督管理局</option>
+              <option value="http://xnaj.xianning.gov.cn/">咸宁市安全生产监督管理局</option>
+              <option value="http://www.esajj.com.cn/">恩施市安全生产监督管理局</option>
+              <option value="http://6293179.1024sj.com/">随州市安全生产监督管理局</option>
+              <option value="http://www.xtaj.gov.cn/">仙桃市安全生产监督管理局</option>
+              <option value="http://www.hbqj.gov.cn/saqjd/">潜江市安全生产监督管理局</option>
+              <option value="http://www.tmsifety-gov.cn/">天门市安全生产监督管理局</option>
+              <option value="http://61.183.47.13/ajj/">神农架安全生产监督管理局</option>
+            </select>
+          </form></td>
+      </tr>
+    </table>
+  </div>
+  <div  class="DivH20 clear"></div>
+</div>
+<div class="xuanfu">
+  <div class="xuanfu-03"><a href="javascript:;">×</a></div>
+  <div class="xuanfu-02"> <img src="${webPath}/resource/front/images/v2/index_65.jpg" width="102" height="102" style="margin-bottom:5px;">关注湖北省宣教<br>
+    中心微信公众号</div>
+</div>
+ ${httpInclude.include("/foot.htm")}
+
+<script type="text/javascript" src="${webPath}/resource/front/js/v2/ck/ckplayer/ckplayer.js"></script>
+<script type="text/javascript" src="${webPath}/resource/front/js/v2/slide.js"></script>
+	
+<script>
+
+  $(".lanmu-1 ol li").click(function(){
+    var index = $(this).index();
+    $(this).addClass('active').siblings('li').removeClass('active');
+    $(".lanmu-1 ul li").eq(index).show().siblings('li').hide();
+  })
+  var timer = null;
+  var num = 0;
+  var len = $(".lanmu-1 ol li").length;
+  setInterval(function(){
+    num++;
+    if(num > len-1){
+      num = 0;
+    }
+    $(".lanmu-1 ol li").eq(num).addClass('active').siblings('li').removeClass('active');
+    $(".lanmu-1 ul li").eq(num).show().siblings('li').hide();
+  }, 5000);
+  $(".switch-con li").eq(0).addClass("active");
+$(function(){		
+	$("#jumpMenu").change(function(){
+		var src = $(this).val();
+		if( src != '' ){
+			window.open(src,'_blank');
+		}
+	});
+	$('.xuanfu-03').click(function(){
+	  $(this).parent().slideUp();
+	})
+	
+	/* 视频播放 1（宣传报道）*/
+	if( $('#xcbd')[0] != null ){
+		var flashvars={
+				f:'${webPath}'+$("#xcbdVideo").val(),
+				c:0,
+				b:1
+			};
+		var params={bgcolor:'#FFF',allowFullScreen:true,allowScriptAccess:'always',wmode:'transparent'};
+		CKobject.embedSWF('${webPath}/resource/front/js/v2/ck/ckplayer/ckplayer.swf','xcbd','ckplayer_a1','100%','100%',flashvars,params);
+	}
+	/* 视频播放 2（政策解读）*/
+	if( $('#zcjd')[0] != null ){
+		var flashvars={
+				f:'${webPath}'+$("#zcjdVideo").val(),
+				c:0,
+				b:1
+			};
+		var params={bgcolor:'#FFF',allowFullScreen:true,allowScriptAccess:'always',wmode:'transparent'};
+		CKobject.embedSWF('${webPath}/resource/front/js/v2/ck/ckplayer/ckplayer.swf','zcjd','ckplayer_a2','100%','100%',flashvars,params);
+	}
+	/* 视频播放 3（安全文化）*/
+	if( $('#aqwh')[0] != null ){
+		var flashvars={
+				f:'${webPath}'+$("#aqwhVideo").val(),
+				c:0,
+				b:1
+			};
+		var params={bgcolor:'#FFF',allowFullScreen:true,allowScriptAccess:'always',wmode:'transparent'};
+		CKobject.embedSWF('${webPath}/resource/front/js/v2/ck/ckplayer/ckplayer.swf','aqwh','ckplayer_a3','100%','100%',flashvars,params);
+	}
+	/* 视频播放 4（案例警示）*/
+	if( $('#aqwh')[0] != null ){
+		var flashvars={
+				f:'${webPath}'+$("#aljsVideo").val(),
+				c:0,
+				b:1
+			};
+		var params={bgcolor:'#FFF',allowFullScreen:true,allowScriptAccess:'always',wmode:'transparent'};
+		CKobject.embedSWF('${webPath}/resource/front/js/v2/ck/ckplayer/ckplayer.swf','aljs','ckplayer_a3','100%','100%',flashvars,params);
+	}
+	// 视频简介
+	$('.video_container').hover(function(){
+		var $this = $(this);
+		var num = 0;
+		$this.data('timer',null);
+		clearInterval( $this.data('timer') );
+		var $info = $this.find('.video_container_info');
+		$info.stop().animate({
+			top : 0
+		},800,function(){
+			$this.data('timer', setInterval(function(){
+				$info.css('left',num--);
+			},30));
+		});	
+		
+	},function(){
+		var $this = $(this);
+		clearInterval( $this.data('timer') );
+		var $info = $this.find('.video_container_info');
+		$info.stop().animate({
+			top : '-30px'
+		},800,function(){
+			$info.css('left',0);
+		});	
+	})
+	
+})
+
+autoPlays($("#lanmu-3"),8000);
+autoPlays($("#lanmu-6"),8000);
+
+/* 
+	parse：元素，速度
+	reture: false
+*/
+function autoPlays(obj,speed){
+	var aLi = obj.find( 'li' );
+	var child_div = obj.find('.list');
+	var aDiv = child_div.find('.list-container');
+	obj.num = 0; 
+	obj.timer = null;
+	/* 鼠标经过父级 */
+	$(obj).hover(function(){
+		clearInterval( obj.timer );
+	},function(){
+		clearInterval( obj.timer );
+		obj.timer = setInterval(function(){
+			autoPlay(obj,aLi,aDiv);
+		}, speed);
+	});
+	/* 鼠标经过aLi事件 */
+	$(aLi).hover(function(){
+		clearInterval( obj.timer );
+		var index = $(this).index();
+		obj.num = index;
+		aLi.eq(obj.num).addClass('active').siblings("li").removeClass('active');
+		aDiv.eq(obj.num).show().siblings("div").hide();
+	},function(){
+		clearInterval( obj.timer );
+		obj.timer = setInterval(function(){
+			autoPlay(obj,aLi,aDiv);
+		}, speed);
+	});
+	/* 开启定时器 */
+	obj.timer = setInterval(function(){
+		autoPlay(obj,aLi,aDiv);
+	}, speed);
+}
+function autoPlay(obj,targetNode,toggleNode){
+	obj.num++;
+	if( obj.num == targetNode.length  ){
+		obj.num = 0;
+	}
+	targetNode.eq(obj.num).addClass('active').siblings("li").removeClass('active');
+	toggleNode.eq(obj.num).show().siblings("div").hide();
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>角色权限页面</title>
+ <link href="${webPath}/widgets/showloading/showLoading.css" rel="stylesheet" type="text/css"/>
+ <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+ <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+ <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+ <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+ <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+ <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+ <script type="text/javascript" src="${webPath}/widgets/showloading/jquery.showLoading.min.js"></script>
+ <script type="text/javascript">
+ var param = EasyUIExt.myOpener.param;
+   $(function(){
+	   $(".easyui-layout").showLoading();
+	   $("#resourceTree").tree({
+		   url:"${webPath}/system/resource/resourceTree.htm",
+		   cascadeCheck:true,
+		   checkbox : true,
+		   height : 300,
+		   lines:true,
+		   cascadeCheck : false,
+		   width : 260,
+		   onBeforeLoad:function(node, param){
+			 if(node){
+				 return false;
+			 }else{
+				 return true;
+			 }
+		   },
+		   loadFilter:function(data){
+			   return data.data;
+		   },onLoadSuccess(node,data){
+			   //勾选用户有的权限
+			   selectRolesResource();
+			   //关闭遮罩层
+			   $(".easyui-layout").hideLoading();
+		   },onCheck:function(node,checked){
+			   if(checked){
+				   if(node){
+					  var parnet = $(this).tree('getParent', node.target);
+					  if (parnet) {
+						$(this).tree("check", parnet.target);
+					  }  
+				   }
+			   }else{
+				    if(node){
+			    	  var children = $(this).tree('getChildren', node.target);
+					  if (children) {
+						$(this).tree("uncheck", uncheck(children));
+					  }
+				    }
+			   }
+		   }
+	   }); 
+   });
+   function uncheck(childrens){
+	   for(var i in childrens){
+	  	 $("#resourceTree").tree("uncheck",childrens[i].target);
+	   }
+   }
+   function selectRolesResource(){
+	   $.ajax({
+		  url:"${webPath}/system/resource/selectRolesResource.htm",
+		  type:"POST",
+		  dataType:"json",
+		  data:{rolesid:param.entity.id},
+		  success:function(data){
+			 var selectDatas = data.data;
+			 for(var i in selectDatas){
+				 var node = $("#resourceTree").tree('find', selectDatas[i].id);
+				 $("#resourceTree").tree("check",node.target); 
+			 }
+		  }
+	   });
+   }
+   function submitForm(){
+	   var index = top.layer.load(1, {
+		    shade: [0.5,'#000'] //0.1透明度的白色背景
+		});
+	   var selectTree = $("#resourceTree").tree("getChecked");
+	   var resourceList = [];
+	   for(var i in selectTree){
+		   resourceList.push(selectTree[i].id);
+	   }
+	   $.ajax({
+		  url:"${webPath}/system/resource/updateSetResource.htm",
+		  type:"POST",
+		  data:{id:param.entity.id,resourceids:resourceList.join(",")},
+		  dataType:"json",
+		  success:function(data){
+			  top.layer.close(index);
+			  param.success(EasyUIExt.myOpener.dialog,data);
+		  }
+	   })
+   }
+ </script>
+</head>
+<body>
+    <div class="easyui-layout" data-options="fit:true,border:false">
+      <div data-options="region:'center',border:false">
+        <ul id="resourceTree"></ul>
+      </div>
+      <div data-options="region:'south'"style="height: 38px;" >
+          <div class="dialog-button" >
+	    	  <a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+	  		  <a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+         </div>
+      </div>
+    </div>
+</body>
+</html>

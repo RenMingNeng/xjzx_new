@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery-1.11.3.min.js"></script>
+
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+         <div class="location">您当前位置： <a href="${webPath}/certificate/index.htm">证件查询</a>&gt;证件类型:<#if types??><#if 'safetymanageCard'==types>生产经营单位安全生产管理人员安全资格证书
+          <#elseif 'safetymanageCardNew'==types>生产经营单位安全生产管理人员安全资格证书-新证
+          <#elseif 'spelialic'==types>特种作业操作证</#if><#else>暂无此类型</#if></div>
+         <div class="focus-details" id="prArea">
+            <div class="center-line">
+			    <div class="center-con-div1"><span style="margin-right:10px">查询结果</span></div>
+		    </div>
+		    <div class="infoBox" >
+		       <#if types=="safetymanageCard">
+		                <table cellpadding="0" cellspacing="0" border="0" class="table02" style='text-align:center'>
+				            <thead>
+				               <tr>
+				                <!--<th width="15%">序列号</th>-->
+				                <th width="10%">姓名</th>
+				                <th width="10%">性别</th>
+				                <th width="18%">证件号</th>
+				                <th width="10%">开始时间</th>
+				                <th width="10%">结束时间</th>
+                                <th width="10%">初领日期</th>
+				                <th width="15%">证件类型</th>
+				                <th width="12%">单位类型</th>
+				               </tr>
+				            </thead>
+							<tbody>
+							      <#if (safetymanageCards?exists)&&(safetymanageCards?size>0)>
+							          <#list safetymanageCards as safetymanageCard >
+							           <tr>
+										<!--<td >${safetymanageCard.id}</td>-->
+										<td class="t_bg">${safetymanageCard.name}</td>
+										<td >${safetymanageCard.sex}</td>
+										<td >${safetymanageCard.idcard}</td>
+										<td >${safetymanageCard.starttime}</td>
+										<td >${safetymanageCard.endtime}</td>
+										<td >${safetymanageCard.ftime}</td>
+										<td >${safetymanageCard.wfzd}</td>
+										<td >${safetymanageCard.dwlx}</td>
+								       </tr>
+								       </#list>
+								       <#else>
+								       <tr>
+								          <td colspan="8" align="center" style="color: red;">暂时无结果</td>
+								       </tr>
+							      </#if>
+							  </tbody>
+						 </table>
+		         <#elseif types=="safetymanageCardNew">
+		                     <table cellpadding="0" cellspacing="0" border="0" class="table02" style='text-align:center'>
+				            <thead>
+				               <tr>
+				                <!--<th width="15%">序列号</th>-->
+				                <th width="10%">姓名</th>
+				                <th width="10%">性别</th>
+				                <th width="18%">证件号</th>
+				                <th width="10%">开始时间</th>
+				                <th width="10%">结束时间</th>
+                                <th width="10%">初领日期</th>
+				                <th width="15%">证件类型</th>
+				                <th width="12%">考试科目</th>
+				               </tr>
+				            </thead>
+							<tbody>
+							      <#if (safetymanageCardNews?exists)&&(safetymanageCardNews?size>0)>
+							          <#list safetymanageCardNews as safetymanageCard >
+							           <tr>
+										<!--<td >${safetymanageCard.id}</td>-->
+										<td class="t_bg">${safetymanageCard.name}</td>
+										<td >${safetymanageCard.sex}</td>
+										<td >${safetymanageCard.idcard}</td>
+										<td >${safetymanageCard.starttime}</td>
+										<td >${safetymanageCard.endtime}</td>
+										<td >${safetymanageCard.ftime}</td>
+										<td >${safetymanageCard.wfzd}</td>
+										<td >${safetymanageCard.dwlx}</td>
+								       </tr>
+								       </#list>
+								       <#else>
+								       <tr>
+								          <td colspan="8" align="center" style="color: red;">暂时无结果</td>
+								       </tr>
+							      </#if>
+							  </tbody>
+						 </table>
+		         		<#elseif types=="spelialic">
+		                 <table cellpadding="0" cellspacing="0" border="0" class="table02" >
+					            <thead>
+					               <tr>
+					                <th width="6%">姓名</th>
+					                <th width="18%">证书编号</th>
+					                <th width="20%">操作项目</th>
+					                <th width="13%">作业类别</th>
+					                <th width="9%">有效期从</th>
+					                <th width="9%">有效期到</th>
+					                <th width="9%">应复审时间</th>
+					                <th width="8%">初领日期</th>
+					                <th width="8%">复审状态</th>
+					               </tr>
+					            </thead>
+							    <tbody>
+							           <#if (specialicList?exists)&&(specialicList?size>0)>
+								          <#list specialicList as specialic >
+								           <tr>
+											<td >${specialic.name}</td>
+											<td >${specialic.cardnumber}</td>
+											<td >${specialic.prepareproject}</td>
+											<td >${specialic.jobcategory}</td>
+											<td >${specialic.starttime}</td>
+											<td >${specialic.endtime}</td>
+											<td >${specialic.firstreview}</td>
+											<td >${specialic.badgestime}</td>
+											<td >${specialic.reviewid}</td>
+									       </tr>
+									       </#list>
+									       <#else>
+									       <tr>
+									          <td colspan="8" align="center" style="color: red;">暂时无结果</td>
+									       </tr>
+							               </#if>
+							    </tbody>
+							</table> 
+		       </#if>  
+		       <p style="margin:0px auto; margin-top:15px;text-align: center;">证件查询电话: 027-87812940<br/>如证件遗失，需打印本页面信息，持身份证原件和身份证复印件补证</p>
+		    </div>
+       </div>
+     </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>

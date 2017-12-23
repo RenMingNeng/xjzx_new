@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>新闻编辑</title>
+<link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/jquery/ajaxUpload.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/resource/front/js/v2/ck/ckplayer/ckplayer.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+    <script type="text/javascript">
+       var param = EasyUIExt.myOpener.param,ue;
+       jQuery(function(){
+    	    ue = UE.getEditor('form-content',{ 
+    		   autoHeightEnabled:false
+    	   });
+    	 
+    	   $("#form-categoryid").val(param.category.id);
+    	   var url = "${webPath}/system/news/addNews.htm";
+    	   if(param.type=="update"){
+    		   url = "${webPath}/system/news/updateNews.htm";
+    		   $("#form-cover").attr("src",top.baseUrl+"/resource/system/img/zanwutupian.jpg")
+    		   if(param.entity.wjtype){
+    			   $("#form-wjtype").attr("dict-default","");
+    		   }
+    		   if(param.entity.url&&param.entity.url.indexOf("FileUpload")!=-1){
+    				 $("#form-cover").attr("src",top.baseUrl+param.entity.url);	
+    		   }
+    	   }
+    	   EasyUIExt.loadCombobox();
+    	   EasyUIExt.initForm(param);
+    	   //console.log(param);
+    	   jQuery("#myForm").form({
+   			url : url,
+			dataType:"json",
+			onSubmit:function(){
+				index = top.layer.load(1, {
+				    shade: [0.5,'#000'] //0.1透明度的白色背景
+				});
+			},
+			success:function(data){
+				top.layer.close(index);
+				var data = eval('(' + data + ')');
+				if(data.code=="success"){
+					layer.msg("操作成功!", {icon: 1,skin: 'layer-ext-moon'});
+					param.success(EasyUIExt.myOpener.dialog,data);
+				}else{
+					layer.msg("操作失败!", {icon: 2,skin: 'layer-ext-moon'});
+				}
+		    } 
+		});
+    		jQuery("#myForm").form("disableValidation");
+    		jQuery("#myForm").form("enableValidation");
+		//上传封面
+		new AjaxUpload("#uploadImg", {
+			action : top.baseUrl +"/system/uploadFile.htm",
+			autoSubmit : true,
+			responseType: "json",
+			name : "docfile",
+			onSubmit : function(file, extension) {
+				if (extension && /^(jpg|jpeg|bmp|gif|png|tif)$/.test(extension)) {
+				} else {
+					$.messager.alert("提示信息","你所选择的文件格式不支持，支持的格式包含jpg|jpeg|bmp|gif|png|tif");
+					return false;
+				}
+				uploadding = top.layer.load(0, {shade: false});
+			},
+			onComplete : function(file, data) {
+				top.layer.close(uploadding);
+			    if(data.code=="success"){
+			    	var cover = top.baseUrl + data.data;
+			    	$("#form-url").attr("value",data.data);
+			    	$("#form-cover").attr("src",cover);
+			    	top.layer.msg("上传成功！");
+			    }else{
+			    	$.messager.alert("提示信息", "上传失败！");
+			    }
+			}
+		});
+		//上传视频文件
+		new AjaxUpload("#uploadVideo", {
+			action : top.baseUrl +"/system/uploadVideo.htm",
+			autoSubmit : true,
+			responseType: "json",
+			name : "video",
+			onSubmit : function(file, extension) {
+				if (extension && /^(mp4|flv|avi)$/.test(extension)) {
+				} else {
+					$.messager.alert("提示信息","你所选择的文件格式不支持，支持的格式包含mp4|flv|avi");
+					return false;
+				}
+				uploadding = top.layer.load(0, {shade: false});
+			},
+			onComplete : function(file, data) {
+				top.layer.close(uploadding);
+			    if(data.code=="success"){
+			    	var cover = top.baseUrl + data.data;
+			    	$("#form-videoUrl").attr("value",data.data);
+			    	$("#form-coverVideo").attr("value",cover);
+			    	top.layer.msg("上传成功！");
+			    }else{
+			    	$.messager.alert("提示信息", "上传失败！");
+			    }
+			}
+		});
+       });
+       function submitForm(){
+    	   $("#form-content").val(ue.getContent())
+    	   if(jQuery("#myForm").form("validate")){
+    		   jQuery("#myForm").submit();
+			}
+       }
+       //视频预览
+       function yulan() {
+    	   // 新增进入
+    	   if(null == $("#form-videoUrl").val() || '' == $("#form-videoUrl").val()){
+		   	   if (null == $("#form-coverVideo").val() || '' == $("#form-coverVideo").val()) {
+		  			top.$.messager.alert("提示信息", "请上传视频文件");
+		  			return;
+		   		}
+		   		EasyUIExt.iframeDialog({
+		   			url : '${webPath}/system/news/videoView.htm?url='+$("#form-coverVideo").val(),
+		   			width : 900,
+		   			height : 600,
+		   			title : "视频预览"
+		   		});
+    	   }else{   //修改进入
+    		   EasyUIExt.iframeDialog({
+		   			url : '${webPath}/system/news/videoView.htm?url='+'${webPath}'+$("#form-videoUrl").val(),
+		   			width : 900,
+		   			height : 600,
+		   			title : "视频预览"
+		   		});
+    	   }
+   		}
+       
+    </script>
+</head>
+<body>
+   	<form id="myForm" method="post">
+  	 <input id="form-id" type="hidden" name="id" value="0"/>
+  	 <input id="form-categoryid" type="hidden" name="category.id" value="0"/>
+  	  <input id="form-state" type="hidden" name="state" value="1"/>
+  	 <table class="form-table">
+  	 	<tr>
+  	 		<td class="form-label">新闻标题</td>
+  	 		<td class="form-input">
+  	 			<input id="form-title" name="title" class="easyui-validatebox" data-options="required:true,validType:'upperCase'" style="width: 145px;"/>
+  	 			 <span style="font-size: 8px;color: gray">* 不得超过225个字符</span>
+  	 		</td>
+  	 		<td class="form-label">发布人</td>
+  	 		<td class="form-input">
+  	 			<input id="form-author" class="easyui-validatebox" name="author" data-options="required:true" style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">关键字</td>
+  	 		<td class="form-input">
+  	 		  <input id="form-keywords" class="easyui-validatebox" name="keywords"  style="width: 145px;"/>
+  	 		</td>
+  	 		<td class="form-label">新闻来源</td>
+  	 		<td class="form-input">
+  	 		   <input id="form-froms" class="easyui-validatebox" name="froms"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr >
+  	 	   <td class="form-label" rowspan="2">新闻封面</td>
+  	 		<td class="form-input"  rowspan="2" height="80px;" >
+  	 		   <img  src="${webPath}/resource/system/img/zanwutupian.jpg" id="form-cover" style="width: 180px;height: 80px;"/>
+  	 		   <input type="hidden" name="url" id="form-url" value=""/>
+  	 		   <a class="easyui-linkbutton" id="uploadImg" style="position:absolute;top: 100px;left: 360px;">上传图片</a>
+  	 		   <span style="font-size: 8px;color: gray">* jpg、jpeg、bmp、gif、png、tif</span>
+  	 		</td>
+  	 		<td class="form-label">文件类型</td>
+  	 		<td class="form-input"  >
+  	 		    <input id="form-wjtype" class="dictCombobox" dict-pid="4,134" dict-default="请选择" name="wjtype.id"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">发布时间</td>
+  	 		<td class="form-input"  >
+  	 		   <input id="form-time" class="easyui-datebox"  name="time" data-options="required:true,editable:false"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">文号</td>
+  	 		<td class="form-input" colspan="3">
+  	 		   <input id="form-pubno" class="easyui-validatebox" name="pubno"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	
+  	 	<#if categoryId=='44'||categoryId=='74'||categoryId=='75'>
+  	 		<tr>
+	  	 		<td class="form-label">正文</td>
+	  	 		<td class="form-input" colspan="3">
+	  	 		    <textarea id="form-content"  name="content" style="width:780px;height: 120px;"></textarea>
+	  	 		</td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td class="form-label">视频文件</td>
+	  	 		<td class="form-input"  colspan="3" height="40px;">
+	 			   <input class="easyui-linkbutton" type="hidden" name="coverVideo" id="form-coverVideo" readonly="readonly"/>
+	  	 		   <input type="text" name="videoUrl" id="form-videoUrl" style="width: 490px" readonly="readonly"/>
+	  	 		   <a class="easyui-linkbutton" id="uploadVideo"  >上传视频</a>
+	  	 		   <span style="font-size: 8px;color: gray">* 视频格式 mp4、flv、avi</span>
+	  	 		   <a href="javascript:void(0);" onclick="yulan();" id="yulan" style="margin-left: 30px">视频预览</a>
+	  	 		</td>
+	  	 	</tr>
+	  	 	<tr>
+		  	 	<td class="form-label">视频简介</td>
+	  	 		<td class="form-input" colspan="3">
+	  	 		   <input id="form-video_info" class="easyui-validatebox" name="video_info"  style="width: 490px"/>
+	  	 		</td>
+	  	 	</tr>
+	  	 	<tr>
+		  	 	<td class="form-label">视频显示</td>
+	  	 		<td class="form-input" colspan="3">
+	  	 		   <select id="form-video_isvalid" name="video_isvalid">
+					   <option value="1">--是--</option>
+					   <option value="2">--否--</option>
+				   </select>
+	  	 		</td>
+	  	 	</tr>	
+	   <#else>
+	  	 	<tr>
+	  	 		<td class="form-label">正文</td>
+	  	 		<td class="form-input" colspan="3">
+	  	 		    <textarea id="form-content"  name="content" style="width:780px;height: 200px;"></textarea>
+	  	 		</td>
+	  	 	</tr>
+  	 	</#if>
+  	 </table>
+ 	 </form>
+ 	<div class="dialog-button">
+   		<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+ 		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+   </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+        <div class="location">您当前位置： 安全月活动&gt;</div>
+            <div class="focus-details" id="prArea">
+		    	<div class="artTit">
+		            <center><h2>${september.title!''}</h2></center>
+		            <div class="artInfo"><span class="artTool"><a href="javascript:;" id="fsmall">A-</a> <a href="javascript:;" id="fbig">A+</a><a href="javascript:;" id="collect">收藏</a> <a href="#" id="printArt" rel="prArea">打印文章</a></span>发布时间:${september.time?string('yyyy-MM-dd')} </div>
+		            <div class="dline"></div>
+		        </div>
+				<div class="artcle" id="artcle">
+			          ${september.content!''}
+		        </div>
+   			</div>
+     </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>

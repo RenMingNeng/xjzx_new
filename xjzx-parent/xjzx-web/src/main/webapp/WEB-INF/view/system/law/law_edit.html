@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>角色明细</title>
+<link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/jquery/ajaxUpload.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript">
+       var param = EasyUIExt.myOpener.param,ue;
+       jQuery(function(){
+    	    ue = UE.getEditor('form-content',{ 
+    		   autoHeightEnabled:false,
+    	   });
+    	 
+    	   var url = "${webPath}/system/law/addLaw.htm";
+    	   if(param.type=="update"){
+    		   url = "${webPath}/system/law/updateLaw.htm";
+    	   }
+    	   EasyUIExt.loadCombobox();
+    	   EasyUIExt.initForm(param);
+    	   jQuery("#myForm").form({
+   			url : url,
+			dataType:"json",
+			onSubmit:function(){
+				index = top.layer.load(1, {
+				    shade: [0.5,'#000'] //0.1透明度的白色背景
+				});
+			},
+			success:function(data){
+				top.layer.close(index);
+				var data = eval('(' + data + ')');
+				if(data.code=="success"){
+					top.layer.alert(data.msg, {icon: 1,skin: 'layer-ext-moon'});
+					param.success(EasyUIExt.myOpener.dialog,data);
+				}else{
+					top.layer.alert(data.msg, {icon: 2,skin: 'layer-ext-moon'});
+				}
+		    } 
+		});
+    		jQuery("#myForm").form("disableValidation");
+    		jQuery("#myForm").form("enableValidation");
+       });
+       function submitForm(){
+    	   $("#form-content").val(ue.getContent())
+    	   if(jQuery("#myForm").form("validate")){
+    		   jQuery("#myForm").submit();
+			}
+       }
+       
+    </script>
+</head>
+<body>
+   	<form id="myForm" method="post">
+  	 <input id="form-id" type="hidden" name="id" value="0"/>
+  	  <input id="form-state" type="hidden" name="state" value="1"/>
+  	 <table class="form-table">
+  	 	<tr>
+  	 		<td class="form-label">标题</td>
+  	 		<td class="form-input">
+  	 			<input id="form-tilte" name="tilte" class="easyui-validatebox" data-options="required:true,validType:'upperCase'" style="width: 145px;"/>
+  	 		</td>
+  	 		<td class="form-label">发布人单位</td>
+  	 		<td class="form-input">
+  	 			<input id="form-pubunit" class="easyui-validatebox" name="pubunit" data-options="required:true" style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 	    <td class="form-label">法规类型</td>
+  	 		<td class="form-input">
+  	 		   <input id="form-lawType" class="dictCombobox" dict-code="FGLX" name="lawType.id" data-options="required:true,editable:false" style="width: 145px;"/>
+  	 		</td>
+  	 		<td class="form-label">发布文号</td>
+  	 		<td class="form-input">
+  	 		  <input id="form-pubno" class="easyui-validatebox" name="pubno"  style="width: 145px;"/>
+  	 		</td>
+  	 		
+  	 	</tr>
+  	 	<tr>
+  	 	   <td class="form-label">法规颁布日期</td>
+  	 		<td class="form-input">
+  	 		   <input id="form-publishdate" class="easyui-datebox" name="publishdate" data-options="required:true,editable:false" style="width: 145px;"/>
+  	 		</td>
+  	 		<td class="form-label">生效日期</td>
+  	 		<td class="form-input"  >
+  	 		   <input id="form-carryoutdate" class="easyui-datebox"  name="carryoutdate" data-options="required:true,editable:false"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">正文</td>
+  	 		<td class="form-input" colspan="3">
+  	 		    <textarea id="form-content"  name="content" style="width:780px;height: 200px;"></textarea>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">备注</td>
+  	 		<td class="form-input">
+  	 		    <textarea id="form-description"  name="description" style="height: 60px;"></textarea>
+  	 		</td>
+  	 		  <td class="form-label">新增日期</td>
+  	 		<td class="form-input"  >
+  	 		   <input id="form-adddate" class="easyui-datebox"  name="adddate" data-options="required:true,editable:false"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 </table>
+ 	 </form>
+ 	<div class="dialog-button">
+   	<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+ 		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+   </div>
+</body>
+</html>

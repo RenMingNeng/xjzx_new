@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="${webPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+    <div class="location">您当前位置：培训资料分类&gt; <#if (dictList?exists)&&(dictList?size>0)><#list dictList as dict><#if dict.id==dictid>${dict.dictName}</#if></#list></#if></div>
+     <div class="mgt-20">
+	   <div class="fl category-box">
+         <div class="current-category">
+				培训资料分类
+	     </div>
+	     <div class="list-category">
+	        <#if (dictList?exists)&&(dictList?size>0)>
+	             <ul>
+	              <#list dictList as dict>
+	                 <li class="<#if dict.id==dictid>category-select </#if>">
+		                 <div>
+		                     <a href="${webPath}/information/list/${dict.id}/1.htm">${html.delHTMLTag(dict.dictName,20)}</a>
+		                 </div>
+	                 </li>
+	              </#list>
+	             </ul>
+	        </#if>
+	     </div>  
+	   </div>
+	   <div class="fl mgl-10 max-item-box">
+	      <div class="pic-list-wrap">
+	         <#if (trainPage.rows?exists)&&(trainPage.rows?size>0)>
+	            <#list trainPage.rows as data>
+		            <div class="list_ph" id="data_detail${data.id}">
+			              <img src="${webPath}${data.url}" style="height: 100px;width: 80px;">
+			              <div class="traindata-details-info">
+							<p><span>资料名称:</span>${data.name!''}</p>
+							<p class="description"><span>资料描述:</span> 主要内容： ${data.description!''}。</p>
+						  </div>
+		              </div>
+		              <div class="clean"></div>
+	            </#list>
+	         </#if>
+	      </div>
+	        <div class="index_cen_righ_fy" >
+                   <#if (trainPage.rows?exists)&&(trainPage.rows?size>0)>
+                	<ul>
+                    	<li><a href="${webPath}/information/list/${dictid}/1.htm">首页 </a></li>
+	                    <li><a href="${webPath}/information/list/${dictid}/${trainPage.before}.htm">上一页</a></li>
+                    	<#list trainPage.pageListStart..trainPage.pageListEnd as i>
+                    	  <li style="<#if page==i>background: #e14730;</#if>"><a href="${webPath}/information/list/${dictid}/${i}.htm" >${i}</a></li>
+                    	</#list>
+                    	<li><a href="${webPath}/information/list/${dictid}/${trainPage.next}.htm">下一页</a></li>
+	                    <li><a href="${webPath}/information/list/${dictid}/${trainPage.count_page}.htm">尾页</a></li>
+                    </ul>
+                    <#else>
+                    <h1 style="text-align: center;font-size: 24px;">暂时没有数据</h1>
+                  </#if>
+          </div>
+	   </div>
+   </div>   
+</div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>

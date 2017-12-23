@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>数据字典管理</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+    	var param = EasyUIExt.myOpener.param;
+    	var parentName ;
+    	$(function(){
+    		EasyUIExt.initForm(param);
+    		$("#form-parentId").val(param.entity.parentOrgan.id);
+    		$("#parentCode").html(param.entity.parentOrgan.deptypecode);
+    		$("#form-parentName").val(param.entity.parentOrgan.organName);
+    		var url = "${webPath}/system/organization/update.htm";
+    		if(param.type == "add"){
+    			getDictByCode(param.entity.level.dictCode,false);
+    			url = "${webPath}/system/organization/add.htm";
+    		}else{
+    			getDictByCode(param.entity.parentOrgan.level.dictCode,true);
+    			var detypecode = param.entity.deptypecode.replace(param.entity.parentOrgan.deptypecode,"");
+    			$("#form-deptypecode").val(detypecode);
+    		  	$("#form-level").combobox("setValue",param.entity.level.id);
+    		}
+    		var index ; 
+    		$("#myForm").form({
+    			url : url,
+    			onSubmit:function(){
+    				index = top.layer.load(1, {
+    				    shade: [0.5,'#000'] //0.1透明度的白色背景
+    				});
+    			},
+    			success:function(data){
+    				top.layer.close(index);
+					var data = eval('(' + data + ')');
+					param.success(EasyUIExt.myOpener.dialog,data);
+			    } 
+			});
+			$("#myForm").form("disableValidation");
+			$("#myForm").form("enableValidation");
+    	});
+    	
+    	function submitForm(){
+    		$("#code").val(param.entity.parentOrgan.deptypecode+$("#form-deptypecode").val());
+    		if($("#myForm").form("validate")){
+				$("#myForm").submit();
+			}
+    	}
+    	
+    	function selectParent(){
+    		var temp,message;
+    		$.ajax({
+	    		async: false,
+	    		type : "post",
+	    		url : '${webPath}/system/organization/getChildOrganization.htm',
+	    		data:{id:param.entity.id},
+	    		dataType : 'json',
+	    		async: false,
+	    		success : function(data) {
+	    			temp = data.data;
+	    			message = data.message;
+	    		}
+    		});
+    		if(temp){
+    			EasyUIExt.iframeDialog({
+    				url:'${webPath}/system/organization/organizationSelect.htm',
+    				width:300,
+    				height:300,
+    				title:"选择组织架构",
+    				param:{
+    					success : function(dialog,data){
+    						$("#form-parentId").val(data.attributes.id);
+        					$("#form-parentName").val(data.attributes.organName);
+    						dialog.dialog("close");
+    						getDictByCode(data.attributes.level.dictCode, false);
+    						$("#parentCode").html(data.attributes.deptypecode);
+    					}
+    				}
+    			});
+    		}else{
+    			top.layer.alert(message, {icon: 2,skin: 'layer-ext-moon'});
+    		}
+    	}
+    	function getDictByCode(code,readonly){
+    		$('#form-level').combobox({    
+    		    url:'${webPath}/system/organization/getDictByLevel.htm?code='+code,    
+    		    valueField:"id",
+				textField:"dictName",
+				readonly:readonly,
+				loadFilter:function(data){
+					return data.data;
+				}
+    		});  
+    	}
+    </script>
+  </head>
+  
+  <body>
+  	<form id="myForm" method="post">
+	  	 <input id="form-id" type="hidden" name="id" value="0"/>
+	  	 <input id="form-addTime" type="hidden" name="addTime" value=""/>
+	  	 <input id="form-parentId" type="hidden" name="parentOrgan.id" value="0"/>
+	  	 <input id="code" type="hidden" name="code" value="0"/>
+	  	 <table class="form-table">
+	  	 	<tr>
+	  	 		<td class="form-label">组织架构名称</td>
+	  	 		<td class="form-input">
+	  	 			<input id="form-organName" name="organName" style="width: 150px;" class="easyui-validatebox" data-options="required:true"/>
+	  	 		</td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td class="form-label">上级机构</td>
+	  	 		<td class="form-input">
+	  	 			<input id="form-parentName" style="width: 150px;" class="easyui-validatebox" data-options="" value="组织架构" readonly="readonly"/>
+	  	 			<a class="easyui-linkbutton" onclick="selectParent();">选择</a>
+	  	 		</td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td class="form-label">组织架构级别</td>
+	  	 		<td class="form-input">
+	  	 		<input id="form-level" style="width: 150px;" name ="level.id" class="easyui-combobox"  data-options="required:true,editable:false"/>
+	  	 		</td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td class="form-label">机构代码</td>
+	  	 		<td class="form-input">
+	  	 			<span id="parentCode" style="font-size: 12px;"></span><input id="form-deptypecode" style="width: 100px;" name="deptypecode" class="easyui-validatebox" data-options="required:true,validType:'wnumber'" />
+	  	 		</td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td class="form-label">备注信息</td>
+	  	 		<td class="form-input">
+	  	 			<textarea id="form-mark" name="mark" style="width: 150px;height:50px;"></textarea>
+	  	 		</td>
+	  	 	</tr>
+	  	 </table>
+  	 </form>
+  	<div class="dialog-button">
+    	<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+  		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+    </div>
+  </body>
+</html>

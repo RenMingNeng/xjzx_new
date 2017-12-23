@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+	<bean id="defaultCacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+		<property name="shared" value="true"/>
+	</bean>
+	<!-- 配置缓存工厂bean对象 -->
+	<bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="defaultCacheManager" />
+		<property name="cacheName" value="lzw" />
+	</bean>
+
+	<!-- 配置一个缓存拦截器对象，处理具体的缓存业务 -->
+	<bean id="methodICachenterceptor"
+		class="com.anxuan.beadhouse.interceptor.cache.MethodCacheInterceptor">
+		<property name="cache" ref="ehCache" />
+	</bean>
+	<!-- 配置一个权限缓存拦截器对象，处理具体的缓存业务 -->
+    <bean id="methodSecurityUtilAfterAdvice" class="com.anxuan.power.util.SecurityUtil" />
+	
+	<bean id="methodCacheAfterAdvice"
+		class="com.anxuan.beadhouse.interceptor.cache.MethodCacheAfterAdvice">
+		<property name="cache" ref="ehCache" />
+	</bean>
+   
+	<!-- 参与缓存的切入点对象 (切入点对象，调用拦截器) -->
+	<bean id="methodCachePointCutAdvice"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<!-- 配置缓存aop切面 -->
+		<property name="advice" ref="methodICachenterceptor" />
+		<!-- 配置哪些方法参与缓存策略 -->
+		<property name="patterns">
+			<list>
+				<value>.*find.*</value>
+				<value>.*get.*</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="methodCachePointCutAfterAdvice" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice" ref="methodCacheAfterAdvice" />
+		<property name="patterns">
+			<list>
+				<value>.*save.*</value>
+				<value>.*update.*</value>
+				<value>.*delete.*</value>
+			</list>
+		</property>
+	</bean>
+	 <!-- 参与缓存的切入点对象 (切入点对象，调用拦截器) -->
+	    <bean id="methodResourceMapPointCut" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice" ref="methodSecurityUtilAfterAdvice" />
+		<!-- 配置哪些方法参与缓存策略  -->
+		<property name="patterns">
+			<list>
+			    <value>.*modify.*</value>
+			</list>
+		</property>
+	</bean>
+<bean id="autoproxy" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<!-- 可以是Service或DAO层（最好是针对业务层*Service） -->
+		<property name="beanNames">
+			<list>
+				<value>*Service</value>
+			</list>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>methodCachePointCutAdvice</value>
+				<value>methodCachePointCutAfterAdvice</value>
+				<value>methodResourceMapPointCut</value>
+			</list>
+		</property>
+	</bean>
+</beans>

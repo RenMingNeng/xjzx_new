@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.anxuan.xjzx</groupId>
+		<artifactId>xjzx-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.anxuan.xjzx</groupId>
+	<artifactId>xjzx-ht</artifactId>
+	<version>1.0-release</version>
+	<packaging>jar</packaging>
+
+	<name>xjzx-ht</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.anxuan.beadhouse</groupId>
+			<artifactId>bh-core</artifactId>
+			<version>1.4-release</version>
+		</dependency>
+		<dependency>
+			<groupId>com.anxuan.beadhouse</groupId>
+			<artifactId>dictionary</artifactId>
+			<version>1.3-release</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.songxinqiang</groupId>
+			<artifactId>com.baidu.ueditor</artifactId>
+			<version>1.1.2-edit-1.0</version>
+		</dependency>
+	</dependencies>
+</project>

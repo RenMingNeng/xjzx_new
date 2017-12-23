@@ -1,0 +1,118 @@
+<!DOCTYPE HTML >
+<html>
+  <head>
+    <title>数据字典管理</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+    <script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+	<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+    <script type="text/javascript">
+    	var Q = jQuery;
+    	var selectedNode = null;
+    	var targetNode = null;
+    	Q(function(){
+    		initTable();
+    	});
+    	function initTable(){
+    		Q("#categoryTb").datagrid({
+    			url:"${webPath}/system/category/getPage.htm",
+    			border:false,
+				toolbar:"#toolBar",
+				striped : true,
+				fit:true,
+				pageList:[1,5,10,15,20,50],
+				pagination:true,
+				rownumbers:true,
+				columns:[[ 
+					{field:"checkbox",checkbox:true},
+					{field:'name',title:'栏目名称',width:200,sortable:true,align:'center'},
+					{field:'parent',title:'父类栏目',width:200,sortable:true,align:'center',formatter:function(v){if(v){return v.name}}},
+				]],
+				onLoadSuccess:function(){
+					Q(this).datagrid("unselectAll");
+				},
+				loadFilter:function(data){
+					data.data.rows = data.data.data;
+					return data.data;
+				}
+    		});
+    	}
+    	
+    	// 查询
+    	function queryDictValue(){
+    		var queryParam = {};
+			if ($("#txtCode").val()) {
+				queryParam.name = $("#txtCode").val();
+			}
+			$("#categoryTb").datagrid("load", queryParam);
+    	}
+    	// 重置
+    	function resetQuery(){
+    		$("#txtCode").val("");
+    		queryDictValue();
+    	}
+    	
+    	// 保存
+    	function saveShow(){
+    		var selected = jQuery("#categoryTb").datagrid("getSelections");
+    		if (selected.length == 0) {
+    			top.$.messager.alert("提示信息", "请选择要操作的数据！");
+    			return;
+    		}
+    		var idlist = [];
+    		for (var i = 0, len = selected.length; i < len; i++) {
+    			idlist.push(selected[i].id);
+    		}
+    		Q.ajax({
+    			url : "${webPath}/system/news/anotherShow.htm",
+    			dataType : "json",
+    			type:"post",
+    			data:{
+    				"categoryIds" : idlist.join(","),
+    				"newsId" : "${newsId}"
+    			},
+    			success:function(data){
+    				if("success" == data.code){
+    					layer.msg(data.message,{time:1200},function(){
+	    					// 关闭弹窗
+				    		EasyUIExt.closeDialog();
+    					});
+    				}else{
+    					layer.msg("保存失败");
+    				}
+    			}
+    		});
+    	}
+    </script>
+  </head>
+  
+  <body>
+  	<div class="easyui-layout" data-options="fit:true,border:false">
+  		<input type="hidden" id="newsId" name="newsId" value="${newsId}">
+  		<div data-options="region:'center',border:false">
+  			<table id="categoryTb"></table>
+  		</div>
+  		<div id="toolBar" class="search-toolbar">
+  			<table>
+				<tr>
+					<td class="search-label" style="width: 55px;">栏目名称</td>
+					<td class="search-input"><input style="width: 95px;" id="txtCode" type="text"/></td>
+					<td><a onclick="queryDictValue();" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:false">查询</a>
+					<a onclick="resetQuery();" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+					<td style="padding-left: 60px">
+						<a onclick="saveShow();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">保存</a>
+						<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>
+					</td>
+				</tr>
+	  		</table>
+  		</div>
+  	</div>
+  </body>
+</html>

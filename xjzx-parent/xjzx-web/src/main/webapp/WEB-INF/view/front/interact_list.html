@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>湖北省安全生产宣传教育中心</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery.min.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+<style>
+.look-result {
+	line-height:26px;
+	background:#F1F1F1;
+	border:1px solid #fff;
+}
+.look-result > .clear{
+	padding:5px 10px;
+}
+
+.look-result table{
+	width:100%;
+	border:1px solid #000;   
+}
+.look-result table td{
+	border:2px solid #fff;
+	padding:0 10px;  
+}
+.look-result table td.th{
+	text-align:right;
+	width:120px;
+}
+.look-result small{
+	font-size:80%;
+}
+.look-result .time{
+	padding:0 10px;
+	border-left:1px solid #fff;   
+}
+.look-result>.clear>a{
+	width: 640px;
+    display: inline-block;
+    cursor: pointer;  
+ }  
+.look-result > a,
+.look-result > .time{
+	padding:5px;       
+}
+.look-result input[type="button"]{
+	height:21px;
+	width:70px;
+	background-image: url(${webPath}/resource/front/images/v2/btn-bg.png);
+	background-position:-1px -1px;
+}
+.look-result input[type="button"].diaocha{
+	background-position:-1px 20px;   
+	margin-bottom: 3px;   
+}
+.look-result input[type="button"]:hover{
+	opacity: 0.8;      
+}
+.look-result textarea{
+	width:100%;
+	margin-left: -5px;
+    margin-top: 8px;          
+}
+.line{
+	background: #C7EDCC;   
+}
+</style>	
+</head> 
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+         <div class="location">您当前位置：首页>公众互动</div>
+         <div class="mgt-5 mgb-10 clear">
+         	<!-- 目录方块star -->
+            <div class="fl category-box">
+                 <div class="current-category">
+                   	公众互动
+                 </div>
+                 <div class="list-category">
+                    <ul>
+                      <li class="<#if type=='1'>category-select</#if>">
+                         <div>
+                           <a href="${webPath}/question/interact.htm?type=1" >网上调查</a>
+                         </div>
+                      </li>
+                      <li class="<#if type=='2'>category-select</#if>">
+                         <div> 
+                           <a href="${webPath}/question/interact.htm?type=2" >主任信箱</a>
+                         </div> 
+                      </li>
+                      <li class="<#if type=='3'>category-select</#if>">
+                         <div>
+                           <a href="${webPath}/question/interact.htm?type=3" >咨询投诉</a>
+                         </div>
+                      </li>
+                   </ul>
+                 </div>
+            </div>
+            <!-- 目录方块end -->
+            <!-- 内容开始 -->
+            <div class="fr" style="width:758px;min-height:666px;">
+            <#if type=='1'>
+	          <!-- 在线调查star -->
+			  <div class="artcle" id="zaixiandiaocha">
+			 	  <#if (newsPage.rows?exists)&&(newsPage.rows?size>0)>
+                       <#list newsPage.rows as diaocha>
+                           <div class="lists look-result">
+                          		<div class="clear">
+		                           <a onclick="javascript:diaocha(this,'${diaocha.id}')">${html.delHTMLTag(diaocha.title,30)}&nbsp;&nbsp;&nbsp;&nbsp;<small>${diaocha.create_time[0..9]}</small></a>
+		                           <span class="time" style="float: right;">
+		                           		<input type="button" class="btn" onclick="javascript:look_result(${diaocha.id},${diaocha.type})"/>
+		                           </span>
+	                           </div>
+	                           <div class="line">
+						       		
+						       </div>
+                        </div>
+                       </#list>
+	                   <div class="index_cen_righ_fy" >
+		                	<ul>
+		                    	<li><a href="${webPath}/question/interact.htm?type=1&page=1">首页 </a></li>
+			                    <li><a href="${webPath}/question/interact.htm?type=1&page=${newsPage.before}">上一页</a></li>
+		                    	<#list newsPage.pageListStart..newsPage.pageListEnd as i>
+		                    	  <li style="<#if page==i>background: #e14730;</#if>"><a href="${webPath}/question/interact.htm?type=1&page=${i}" >${i}</a></li>
+		                    	</#list>
+		                    	<li><a href="${webPath}/question/interact.htm?type=1&page=${newsPage.next}">下一页</a></li>
+			                    <li><a href="${webPath}/question/interact.htm?type=1&page=${newsPage.count_page}">尾页</a></li>
+		                    </ul>
+		               </div>
+	               <#else>
+	                    <h1 style="text-align: center;font-size: 24px;">暂时没有数据</h1>
+                   </#if>
+			  </div>
+			  <!-- 在线调查end -->
+		  </#if>
+		  <#if type=='2'>
+			  <!-- 主任信箱star -->
+			  <div class="artcle" id="zhurenxinxiang">
+				   <#if (emailPage.rows?exists)&&(emailPage.rows?size>0)>
+                       <#list emailPage.rows as email>
+                           <div class="lists look-result" style="width: 640px;display: inline-block;">
+                          	   <div class="clear">
+		                           <a style="font-size: 16px;font-weight: bold;">${html.delHTMLTag(email.email,30)}</a>
+	                           </div>
+	                           <div class="line">
+						       </div>
+                         </div>
+                       </#list>
+	                   <div class="index_cen_righ_fy" >
+		                	<ul>
+		                    	<li><a href="${webPath}/question/interact.htm?type=2&page=1">首页 </a></li>
+			                    <li><a href="${webPath}/question/interact.htm?type=2&page=${emailPage.before}">上一页</a></li>
+		                    	<#list emailPage.pageListStart..emailPage.pageListEnd as i>
+		                    	  <li style="<#if page==i>background: #e14730;</#if>"><a href="${webPath}/question/interact.htm?type=2&page=${i}" >${i}</a></li>
+		                    	</#list>
+		                    	<li><a href="${webPath}/question/interact.htm?type=2&page=${emailPage.next}">下一页</a></li>
+			                    <li><a href="${webPath}/question/interact.htm?type=2&page=${emailPage.count_page}">尾页</a></li>
+		                    </ul>
+		               </div>
+	               <#else>
+	                    <h1 style="text-align: center;font-size: 24px;">暂时没有数据</h1>
+                   </#if>
+			  </div>
+			  <!-- 主任信箱end -->
+		  </#if>
+          <#if type=='3'>
+	          <!-- 咨询投诉star -->
+	          <div class="artcle" id="zixuntousu" style="padding-top:0;">
+					<div class="focus-details" id="prArea">
+						<h3 style="font-size:18px;border-bottom:1px solid #333;margin-bottom:10px;text-align:center;"><b>咨询投诉</b></h3>     
+						<div class="row clear" style="width:490px;margin:0 auto 10px;">
+							<div class="fleft">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题：</div>
+							<div class="fleft">
+								<input id="title" placeholder="请输入标题" name="title" style="width: 400px" value="${title!''}" />
+								<font color="red">*</font>
+							</div>
+						</div>
+						<div class="row clear" style="width:490px;margin:0 auto 10px;">
+							<div class="fleft">内&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;容：</div>
+							<div class="fleft">
+								<textarea id="adcontent" placeholder="请输入咨询留言内容" rows="6" name="adcontent" style="width: 398px">${adcontent!''}</textarea>
+								<font color="red">*</font>
+							</div>
+						</div>	
+						<div class="row clear" style="width:490px;margin:0 auto 10px;">
+							<div class="fleft">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 名：</div>
+							<div class="fleft">
+								<input id="username" placeholder="请输入姓名" name="username" style="width: 400px" value="${username!''}" />
+								<font color="red">*</font>
+							</div>
+						</div>	
+						<div class="row clear" style="width:490px;margin:0 auto 10px;">
+							<div class="fleft">联系电话：</div>
+							<div class="fleft">
+								<input id="phone" placeholder="请输入联系电话" name="phone" style="width: 400px" value="${phone!''}"  />
+								<font color="red">*</font>
+							</div>
+						</div>
+						<div class="row clear" style="width:490px;margin:0 auto 10px;">
+							<div class="fleft">电子邮箱：</div>
+							<div class="fleft">
+								<input id="email" placeholder="请输入邮箱地址" name="email" style="width: 400px" value="${email!''}" />
+							</div>
+						</div>
+						<div class="row clear" style="width:490px;margin:0 auto 10px;">
+							<div class="fleft">通讯地址：</div>
+							<div class="fleft">
+								<input id="address" placeholder="请输入通讯地址" name="address" style="width: 400px" value="${address!''}" />
+							</div>
+						</div>
+						<div class="row clear" style="margin-bottom:10px;text-align:center;">
+							<a class="block-a-btn cetisearch-btn" onclick="liuyan();" style="color:#fff!important;text-decoration: none!important;">提交</a>&nbsp;&nbsp;&nbsp;&nbsp;
+						</div>
+				    </div>
+			 </div>
+			 <!-- 咨询投诉end -->
+			 </div>	
+			 <!-- 内容结束 -->
+          </div>
+          
+		 </#if>
+      </div>
+      ${httpInclude.include("/foot.htm")}
+   </div>
+<script>
+// 在线调查
+function diaocha(obj,id){
+	var $this = $(obj);
+	var $p = $this.parent('div');
+	var $p_next = $p.next();
+	$(':input').prop('checked',false);	// 清空选项
+	$("textarea[name='content']").val("");// 清空文本框内容
+	if( ($p_next.html()).trim() == '' ){
+		$.ajax({
+			url:"${webPath}/question/open.htm",
+			type:"post",
+			dataType:"html",
+			data:{
+				"id":id
+			},
+			success:function(data){
+				var result = eval('(' + data + ')');
+				var html = '';
+				var list = [];
+				var type, leng, input_type;
+				if( result.code === "success" ){
+					type = result.data.type;
+					list = result.listData;
+					leng = result.listData.length;
+					if( '1' === type ){      // 单选
+			       		html += '<table>';    
+			       		for( var i = 0; i < leng; i++ ){
+			       			html += '<tr>';
+			       			html += '<td class="th">选项：</td>';
+			       			html += '<td><label><input type="radio" name="option_id" value="'+ result.listData[i].key +'"/> ' + result.listData[i].value + '</label></td>'
+			       			html += '</tr>';
+			       		}
+			       		html += '<tr><td class="th"></td><td><input type="button" class="btn diaocha" onclick="javascript:formSubmit('+ id +','+ type +')"/></td></tr></table>';
+		       			$p_next.html( html );
+					}else if('2' === type){  // 多选 
+						html += '<table>';
+			       		for( var i = 0; i < leng; i++ ){
+			       			html += '<tr>';     
+			       			html += '<td class="th">选项：</td>';
+			       			html += '<td><label><input type="checkbox" name="option_id" value="'+ result.listData[i].key +'"/> ' + result.listData[i].value + '</label></td>'
+			       			html += '</tr>';
+			       		}
+			       		html += '<tr><td class="th"></td><td><input type="button" class="btn diaocha" onclick="javascript:formSubmit('+ id +','+ type +')"/></td></tr></table>';
+		       			$p_next.html( html );
+					}else{					 // 简答
+						html += '<table>';
+						html += '<tr><td><textarea name="content"></textarea></td></tr>';          
+						html += '<tr><td><input type="button" class="btn diaocha" onclick="javascript:formSubmit('+ id +','+ type +')"/></td></tr></table>';
+						$p_next.html( html );
+					}
+				}
+				$p_next.data('index', '1');
+			}
+		});	
+	}else{
+		if( $p_next.data('index') === '1' ){
+			$p_next.hide();
+			$p_next.data('index','0');
+		}else{
+			$p_next.show();
+			$p_next.data('index','1');
+		}
+		
+	}
+	
+};
+
+/**
+ * 参与调查 
+ */
+function formSubmit(id,type){
+	// 遍历选项，获取选中的选项值
+	var keys = [];
+	$("input[name='option_id']:checked").each(function(){
+		keys.push($(this).val());
+	});
+	if(!verify(keys,type))return;
+	var params ;
+	if('3' == type){
+		params = {
+			"question_id" : id,			// 调查id
+	 		"type" : type,				// 调查类型 
+	 		"content" : $.trim($("textarea[name='content']").val())
+		}
+	}else{
+		params = {
+			"question_id" : id,			// 调查id
+	 		"type" : type,				// 调查类型 
+	 		"option_ids" : keys.join(",")
+		}
+	}
+    $.ajax({
+	 	url : "${webPath}/question/joinSurvey.htm",
+	 	async : false,
+	 	type : "post",
+	 	dataType : "html",
+	 	data : params,
+	 	success : function(data){
+	 		var result = eval('(' + data + ')');
+	 		//console.log(result);
+	 		if('success' == result.code){
+	 			layer.alert("谢谢参与！",{icon:1});
+	 			$(':input').prop('checked',false);   //清空选项
+	 			$("textarea[name='content']").val("");// 清空内容
+	 		}else if('already' == result.code){
+	 			layer.msg("您已经投过票了！",{icon:2});
+	 		}
+ 		}
+ 	}); 
+}
+
+// 表单验证
+function verify(keys,type){
+	//错误信息
+	var msg = "";
+	if(3 === type){
+		var content = $.trim($("textarea[name='content']").val());
+		if(!content){
+			msg = "请填写内容！";
+		    layer.msg(msg);
+		    return false;
+		}
+	}else{
+		if(0 == keys.length){
+			msg = "请选择选项";
+		    layer.msg(msg);
+		    return false;
+		}
+	}
+	 return true;
+}
+
+// 查看结果
+function look_result(id,type){
+	var url = '';
+	var width,hight;
+	if(3 === type){
+		width = '650px';
+		hight='550px';
+		url = '${webPath}/question/lookAnswer.htm?id='+id;
+	}else{
+		width = '600px';
+		hight='500px';
+		url = '${webPath}/question/lookResult.htm?id='+id;
+	}
+	layer.open({
+		type : 2,
+		title : '查看结果',
+		shadeClose : false,				//true点击遮罩层关闭 
+		shade : 0.3,					//遮罩层背景
+		area : [ width, hight ],		//弹出层大小
+		content : [url, 'no' ]  //no代表不显示滚动条
+	});
+};
+
+//在线留言
+function liuyan(){
+	//验证
+	if($.trim($("#title").val())==""){
+		layer.alert('留言标题不能为空!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	  }
+	if($.trim($("#adcontent").val())==""){
+		layer.alert('留言内容不能为空!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	  }
+  	if($.trim($("#phone").val())==""){
+		layer.alert('联系电话不能为空!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	  }
+  	if($.trim($("#username").val())==""){
+		layer.alert('姓名不能为空!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	  }
+	 $.ajax({
+	 	url : "${webPath}/advise/addadvise_ajax.htm",
+	 	type : "post",
+	 	dataType : "html",
+	 	data : {
+	 		"title" : $.trim($("#title").val()),
+	 		"adcontent" : $.trim($("#adcontent").val()),
+	 		"username" : $.trim($("#username").val()),
+	 		"phone" : $.trim($("#phone").val()),
+	 		"email" : $.trim($("#email").val()),
+	 		"address" : $.trim($("#address").val())
+	 	},
+	 	success : function(result){
+	 		if('1' == result){
+	 			layer.msg('留言成功!', {icon: 1});
+	 			$("#title").val('');
+	 			$("#adcontent").val('');
+	 			$("#username").val('');
+	 			$("#phone").val('');
+	 			$("#email").val('');
+	 			$("#address").val('');
+	 		}else{
+	 			layer.msg('留言失败!', {icon: 2});
+	 		}
+	 	}
+			 
+	 });
+}
+</script>
+</body>
+</html>

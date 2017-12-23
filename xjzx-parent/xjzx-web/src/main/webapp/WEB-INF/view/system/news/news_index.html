@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>组织架构管理</title>
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="${base.contextPath}/widgets/easyui1.3.6/themes/button.css">
+<script type="text/javascript" src="${base.contextPath}/widgets/jquery/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="${base.contextPath}/widgets/easyui1.3.6/commons.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+<script type="text/javascript">
+	var selectedNode, targetNode;
+	jQuery(function() {
+		initTree();
+		//initTable();
+		//initPersonTable();
+	});
+	function initTree(){
+		jQuery("#catetoryTree").tree(
+				{
+					url : "${webPath}/system/category/getUnsyncTree.htm?pid=0",
+					onBeforeLoad : function(node) {
+						if (node) {
+							jQuery("#catetoryTree").tree("options").url = "${webPath}/system/category/getUnsyncTree.htm?pid="
+									+ node.attributes.id;
+						}
+					},
+					loadFilter : function(data) {
+						//console.log(data.data)
+						if (data.code == "success") {
+							return data.data;
+						} else {
+							return [];
+						}
+					},
+					onContextMenu : function(e, node) {
+						e.preventDefault();
+						targetNode = node;
+						//显示快捷菜单
+						jQuery('#contextmenu').menu('show', {
+							left : e.pageX,
+							top : e.pageY
+						});
+					},
+					onClick : function(node) {
+						selectedNode = node;
+						queryDictValue();
+					}
+				});
+	}
+	// 信息列表初始化
+	function initTable(){
+		jQuery("#newsTb").datagrid({
+			border : false,
+			toolbar : "#toolBar",
+			striped : true,
+			fit : true,
+			pageList : [ 1, 5, 10, 15, 20 ],
+			pagination : true,
+			rownumbers : true,
+			columns : [[ 
+				{field : "checkbox",checkbox : true}, 
+				{field : 'istop',title : '状态',width : 50,align : 'center',
+					formatter : function(v, r) {
+						if (v == 1) {
+							return "<span style='color:red;'>[置顶]</span>";
+						} else {return "";}
+					}
+			    },
+			    {field : 'review',title : '审核状态',width : 100,align : 'center',
+					formatter : function(v, r) {
+						if (v == 0) {
+							return "<span style='color:red;'>未审核</span>";
+						} else if (v == 1) {
+							return "<span style='color:green;'>审核通过</span>";
+						} else if (v == 2) {
+							return "<span style='color:#9E1515;'>审核未通过</span>";
+						}
+					}
+			   }, 
+			   {field : 'title',title : '标题',width : 120,sortable : true,align : 'center'}, 
+			   {field : 'author',title : '发布人',width : 120,sortable : true,align : 'center'}, 
+			   {field : 'wjtype',title : '红头类型',width : 120,sortable : true,align : 'center',
+					formatter : function(v) {
+						if (v) {return v.dictName} else {return "---"}
+					}
+			   }, 
+			   {field : 'keywords',title : '关键字',width : 300,sortable : true,align : 'center'}, 
+			   {field : 'froms',title : '信息来源',width : 300,sortable : true,align : 'center'}, 
+			   {field : 'creatDate',title : '上传时间',width : 250,sortable : true,align : 'center',formatter : EasyUIExt.formateDateTime}, 
+			   {field : 'time',title : '发布日期',width : 250,sortable : true,align : 'center',formatter : EasyUIExt.formateDateTime} 
+			]],
+			onLoadSuccess : function() {
+				jQuery(this).datagrid("unselectAll");
+			},
+			loadFilter : function(data) {
+				data.data.rows = data.data.data;
+				return data.data;
+			}
+		});
+	}
+	// 人员列表初始化
+	function initPersonTable(){
+		jQuery("#newsTb").datagrid({
+			border : false,
+			toolbar : "#toolBar",
+			striped : true,
+			fit : true,
+			pageList : [ 1, 5, 10, 15, 20 ],
+			pagination : true,
+			rownumbers : true,
+			columns : [[ 
+			   {field : "checkbox",checkbox : true}, 
+			   {field : 'name',title : '姓名',width : 120,sortable : true,align : 'center'}, 
+			   {field : 'sex',title : '性别',width : 120,sortable : true,align : 'center',formatter : function(v,r){
+				   if (v == 1) {
+						return "<span'>男</span>";
+					} else if (v == 2) {
+						return "<span'>女</span>";
+					}
+			   }},
+			   {field : 'job',title : '职务',width : 120,sortable : true,align : 'center'},
+			   {field : 'position',title : '职称',width : 120,sortable : true,align : 'center'},
+			   {field : 'picture_state',title : '头像显示',width : 100,align : 'center',formatter : function(v, r) {
+						if (v == 1) {
+							return "<span style='color:green;'>显示</span>";
+						} else if (v == 2) {
+							return "<span style='color:#9E1515;'>不显示</span>";
+						}
+				}}, 
+			   {field : 'createDate',title : '操作时间',width : 250,sortable : true,align : 'center',formatter : EasyUIExt.formateDateTime}, 
+			]],
+			onLoadSuccess : function() {
+				jQuery(this).datagrid("unselectAll");
+			},
+			loadFilter : function(data) {
+				data.data.rows = data.data.data;
+				return data.data;
+			}
+		});
+	}
+	
+	//点击树节点执行
+	function queryDictValue() {
+		if (selectedNode == null || selectedNode.id == 0) {
+			return;
+		}
+		var categoryId = selectedNode.attributes.id;
+		var url = '';
+		if(categoryId == 56){  // 人员机构列表
+			$(".news_div").hide();
+			$(".person_div").show();
+			initPersonTable();
+			url = '${webPath}/system/person/getPersonPage.htm'; 
+			jQuery("#newsTb").datagrid("options").url = url;
+			var queryParam = {};
+			if ($("#txtName").val()) {
+				queryParam.name = $("#txtName").val();
+			}
+			$("#newsTb").datagrid("load", queryParam);
+		}else{    // 信息列表               
+			$(".person_div").hide();
+			$(".news_div").show();
+			initTable();
+			url = '${webPath}/system/news/getNewsPage.htm?category.id='+categoryId;  
+			jQuery("#newsTb").datagrid("options").url = url;
+			var queryParam = {};
+			if ($("#txtCode").val()) {
+				queryParam.title = $("#txtCode").val();
+			}
+			if ($("#txtValue").val()) {
+				queryParam.content = $("#txtValue").val();
+			}
+			$("#newsTb").datagrid("load", queryParam);
+		}
+	}
+	// 新增信息类别
+	function addCatetory(type) {
+		var parentOrgan;
+		if (type == 0) {
+			parentOrgan = jQuery("#catetoryTree").tree("getRoot").attributes;
+		} else {
+			parentOrgan = targetNode.attributes;
+		}
+		EasyUIExt.iframeDialog({
+					url : '${webPath}/system/category/CategorySave.htm',
+					width : 400,
+					height : 280,
+					title : "新增-动态类型",
+					param : {
+						type : "add",
+						entity : {
+							parent : parentOrgan,
+						},
+						success : function(dialog, data) {
+							var icon = data.code == "success" ? 1 : 2;
+							top.layer.alert(data.message, {
+								icon : icon,
+								skin : 'layer-ext-moon'
+							});
+							if (data.code != 'flag') {
+								if (targetNode.id == 0) {
+									$("#catetoryTree").tree("options").url = "${webPath}/system/category/getUnsyncTree.htm?pid=0";
+									$("#catetoryTree").tree("reload");
+								} else {
+									$("#catetoryTree").tree("reload",targetNode.target);
+								}
+								dialog.dialog("close");
+							}
+						}
+					}
+				});
+	}
+	
+	// 修改信息类别
+	function updateCatetory() {
+		var entity = targetNode.attributes;
+		entity.parent = jQuery("#catetoryTree").tree("getParent",
+				targetNode.target).attributes;
+		EasyUIExt
+				.iframeDialog({
+					url : '${webPath}/system/category/categoryModify.htm',
+					width : 400,
+					height : 280,
+					title : "修改动态类型",
+					param : {
+						entity : entity,
+						type : "update",
+						success : function(dialog, data) {
+							var icon = data.code == "success" ? 1 : 2;
+							top.layer.alert(data.message, {
+								icon : icon,
+								skin : 'layer-ext-moon'
+							});
+							var parentNode = $("#catetoryTree").tree(
+									"getParent", targetNode.target);
+							if (data.code != 'flag') {
+								if (parentNode.id != 0) {
+									$("#catetoryTree").tree("reload",
+											parentNode.target);
+								} else {
+									$("#catetoryTree").tree("options").url = "${webPath}/system/category/getUnsyncTree.htm?pid=0";
+									$("#catetoryTree").tree("reload");
+								}
+								dialog.dialog("close");
+							}
+						}
+					}
+				});
+	}
+	// 删除信息类别
+	function delCatetory() {
+		if (targetNode.id == 0) {
+			top.Q.messager.alert("提示信息", "无法删除根节点！");
+			return;
+		}
+		$.messager.confirm("提示信息","是否确定删除？",
+			function(r) {if (r) 
+			   {jQuery.ajax({
+								url : "${webPath}/system/category/delete.htm",
+								dataType : "json",
+								type : "post",
+								data : {
+									ids : targetNode.id
+								},
+								success : function(data) {
+									var icon = data.code == "success" ? 1
+											: 2;
+									top.layer.alert(data.message, {
+										icon : icon,
+										skin : 'layer-ext-moon'
+									});
+									if (data.code == "success") {
+										var parentNode = $("#catetoryTree").tree("getParent",targetNode.target);
+										if (parentNode.id != 0) {
+											$("#catetoryTree").tree("reload",parentNode.target);
+										} else {
+											$("#catetoryTree").tree("options").url = "${webPath}/system/category/getUnsyncTree.htm?pid=0";
+											$("#catetoryTree").tree("reload");
+										}
+									}
+								}
+							});
+							}
+						});
+	}
+	// 新增信息
+	function addNews() {
+		if (selectedNode == null) {
+			top.$.messager.alert("提示信息", "请选择动态类型！");
+			return;
+		}
+		if (selectedNode.id == 0) {
+			top.$.messager.alert("提示信息", "无法在根目录中添加动态类型值！");
+			return;
+		}
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/news/loadAddNew.htm?categoryId='+selectedNode.id,
+			width : 1000,
+			height : 700,
+			title : "新增-信息",
+			param : {
+				type : "add",
+				category : selectedNode.attributes,
+				success : function(dialog, data) {
+					var icon = data.code == "success" ? 1 : 2;
+					if (data.code == "success") {
+						top.layer.alert(data.message, {icon : icon,skin : 'layer-ext-moon'});
+						dialog.dialog("close");
+						jQuery("#newsTb").datagrid("reload");
+					}
+
+				}
+			}
+		});
+	}
+	// 新增人员
+	function addPerson() {
+		if (selectedNode == null) {
+			top.$.messager.alert("提示信息", "请选择动态类型！");
+			return;
+		}
+		if (selectedNode.id != 56) {
+			top.$.messager.alert("提示信息", "请选择人员机构节点！");
+			return;
+		}
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/person/loadAddPerson.htm',
+			width : 600,
+			height : 400,
+			title : "新增-人员信息",
+			param : {
+				type : "add",
+				success : function(dialog, data) {
+					var icon = data.code == "success" ? 1 : 2;
+					if (data.code == "success") {
+						top.layer.alert(data.message, {icon : icon});
+						dialog.dialog("close");
+						jQuery("#newsTb").datagrid("reload");
+					}
+
+				}
+			}
+		});
+	}
+	// 修改信息
+	function updateNews() {
+		var selected = jQuery("#newsTb").datagrid("getSelections");
+		if (selected.length != 1) {
+			top.$.messager.alert("提示信息", "请选择一条数据进行操作！");
+			return;
+		}
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/news/loadUpdateNew.htm?categoryId='+selected[0].category.id,
+			width : 1000,
+			height : 700,
+			title : "修改-信息",
+			param : {
+				type : "update",
+				category : selected[0].category,
+				entity : selected[0],
+				success : function(dialog, data) {
+					var icon = data.code == "success" ? 1 : 2;
+					top.layer.alert(data.message, {
+						icon : icon,
+						skin : 'layer-ext-moon'
+					});
+					if (data.code == "success") {
+						jQuery("#newsTb").datagrid("reload");
+						dialog.dialog("close");
+					}
+
+				}
+			}
+		});
+	}
+	// 修改人员信息
+	function updatePerson() {
+		var selected = jQuery("#newsTb").datagrid("getSelections");
+		if (selected.length != 1) {
+			top.$.messager.alert("提示信息", "请选择一条数据进行操作！");
+			return;
+		}
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/person/loadUpdatePerson.htm?id='+selected[0].id,
+			width : 600,
+			height : 400,
+			title : "修改-人员信息",
+			param : {
+				type : "update",
+				entity : selected[0],
+				success : function(dialog, data) {
+					var icon = data.code == "success" ? 1 : 2;
+					top.layer.alert(data.message, {
+						icon : icon,
+						skin : 'layer-ext-moon'
+					});
+					if (data.code == "success") {
+						jQuery("#newsTb").datagrid("reload");
+						dialog.dialog("close");
+					}
+
+				}
+			}
+		});
+	}
+	//删除信息
+	function deleteNews() {
+		var selected = $("#newsTb").datagrid("getSelections");
+		if (selected.length == 0) {
+			top.$.messager.alert("提示信息", "请选择数据！");
+			return;
+		}
+		var idlist = [];
+		for (var i = 0, len = selected.length; i < len; i++) {
+			idlist.push(selected[i].id);
+		}
+		top.$.messager.confirm("提示信息", "是否确定删除？", function(r) {
+			if (r) {
+				jQuery.ajax({
+					url : "${webPath}/system/news/deleteNews.htm",
+					dataType : "json",
+					type : "post",
+					data : {
+						ids : idlist.join(",")
+					},
+					success : function(data) {
+						var icon = data.code == "success" ? 1 : 2;
+						top.layer.alert(data.message, {
+							icon : icon,
+							skin : 'layer-ext-moon'
+						});
+						jQuery("#newsTb").datagrid("reload");
+					}
+				});
+			}
+		});
+	}
+	//删除人员信息
+	function deletePerson() {
+		var selected = $("#newsTb").datagrid("getSelections");
+		if (selected.length == 0) {
+			top.$.messager.alert("提示信息", "请选择数据！");
+			return;
+		}
+		var idlist = [];
+		for (var i = 0, len = selected.length; i < len; i++) {
+			idlist.push(selected[i].id);
+		}
+		top.$.messager.confirm("提示信息", "是否确定删除？", function(r) {
+			if (r) {
+				jQuery.ajax({
+					url : "${webPath}/system/person/deletePerson.htm",
+					dataType : "json",
+					type : "post",
+					data : {
+						ids : idlist.join(",")
+					},
+					success : function(data) {
+						var icon = data.code == "success" ? 1 : 2;
+						top.layer.alert(data.message, {
+							icon : icon,
+							skin : 'layer-ext-moon'
+						});
+						jQuery("#newsTb").datagrid("reload");
+					}
+				});
+			}
+		});
+	}
+	// 置顶
+	function isTop(istop){
+		var selected = $("#newsTb").datagrid("getSelections");
+		if (selected.length == 0) {
+			top.$.messager.alert("提示信息", "请选择数据！");
+			return;
+		}
+		var idlist = [];
+		for (var i = 0, len = selected.length; i < len; i++) {
+			idlist.push(selected[i].id);
+		}
+		jQuery.ajax({
+			url : "${webPath}/system/news/updateNewsByIsTop.htm",
+			dataType : "json",
+			type : "post",
+			data : {
+				ids : idlist.join(","),
+				isTop : istop
+			},
+			success : function(data) {
+				var icon = data.code == "success" ? 1 : 2;
+				 top.layer.alert(data.message, {icon : icon,skin : 'layer-ext-moon'});
+				 if(data.code == "success"){
+				   jQuery("#newsTb").datagrid("reload");
+				 }
+			}
+		});
+	}
+	 //审核
+	 function shenhe(review){
+			var selected = $("#newsTb").datagrid("getSelections");
+			if (selected.length == 0) {
+				top.$.messager.alert("提示信息", "请选择数据！");
+				return;
+			}
+			var idlist = [];
+			for (var i = 0, len = selected.length; i < len; i++) {
+				idlist.push(selected[i].id);
+			}
+			jQuery.ajax({
+				url : "${webPath}/system/news/updateNewsByReview.htm",
+				dataType : "json",
+				type : "post",
+				data : {
+					ids : idlist.join(","),
+					review : review
+				},
+				success : function(data) {
+					var icon = data.code == "success" ? 1 : 2;
+					 top.layer.alert(data.message, {icon : icon,skin : 'layer-ext-moon'});
+					 if(data.code == "success"){
+					   jQuery("#newsTb").datagrid("reload");
+					 }
+				}
+			});
+	 }
+ 
+	 // 到选择文档分类页面
+	 function toSelectType() {
+			var selected = jQuery("#newsTb").datagrid("getSelections");
+			if (selected.length == 0) {
+				top.$.messager.alert("提示信息", "请选择要操作的数据！");
+				return;
+			}
+			var idlist = [];
+			for (var i = 0, len = selected.length; i < len; i++) {
+				idlist.push(selected[i].id);
+			}
+			EasyUIExt.iframeDialog({
+				url : '${webPath}/system/news/toSelectType.htm?ids='+idlist.join(","),
+				width : 500,
+				height : 500,
+				title : "栏目列表",
+				param : {}
+			});
+	}
+ 
+	//到推送显示页面
+ 	function toAnotherShow() {
+		var selected = jQuery("#newsTb").datagrid("getSelections");
+		if (selected.length != 1) {
+			top.$.messager.alert("提示信息", "请选择一条数据进行操作！");
+			return;
+		}
+		var newsId = selected[0].id;
+		EasyUIExt.iframeDialog({
+			url : '${webPath}/system/news/toAnotherShow.htm?id='+newsId,
+			width : 500,
+			height : 500,
+			title : "栏目列表",
+			param : {}
+		});
+	}
+ 	// 重置
+ 	function resetQuery(){
+ 	   $("#txtTitle").val("");
+ 	   $("#is_valid").val("");
+ 	   $("#txtName").val("");
+ 		queryDictValue();
+ 	}
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true,border:false">
+		<div data-options="region:'west',title:'动态类型',border:false,split:true"
+			style="width: 200px;">
+			<ul id="catetoryTree"></ul>
+		</div>
+		<div data-options="region:'center',title:'信息动态列表',border:false">
+			<table id="newsTb"></table>
+		</div>
+		<div id="toolBar" class="search-toolbar">
+			<table class="news_div">
+				<tr>
+					<td class="search-label" style="width: 55px;">文章标题</td>
+					<td class="search-input"><input style="width: 95px;"
+						id="txtCode" type="text" /></td>
+					<td class="search-label" style="width: 55px;">文章内容</td>
+					<td class="search-input"><input style="width: 95px;"
+						id="txtValue" type="text" /></td>
+					<td><a onclick="queryDictValue();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-search',plain:false">查询</a> <a
+						onclick="resetQuery();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+				</tr>
+			</table>
+			<div class="news_div">
+				<a onclick="addNews();" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a> 
+				<a onclick="updateNews();" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">修改</a>
+				<a onclick="deleteNews();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">删除</a> 
+				<a onclick="isTop(1);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-upload'">置顶</a>
+				<a onclick="isTop(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-no'" >取消置顶</a>
+				<a onclick="shenhe(1);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok'" >审核通过</a> 
+				<a onclick="shenhe(2);" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-cancel'" >审核拒绝</a>
+				<a onclick="toSelectType();" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true">文档移动</a>	
+				<a onclick="toAnotherShow();" class="easyui-linkbutton" data-options="iconCls:'icon-redo',plain:true">推送显示</a>
+			</div>
+			<table class="person_div">
+				<tr>
+					<td class="search-label" style="width: 55px;">姓名</td>
+					<td class="search-input"><input style="width: 95px;"
+						id="txtName" type="text" /></td>
+					<td><a onclick="queryDictValue();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-search',plain:false">查询</a> <a
+						onclick="resetQuery();" class="easyui-linkbutton"
+						data-options="iconCls:'icon-undo',plain:false">重置</a></td>
+				</tr>
+			</table>
+			<div class="person_div" style="display: none;">
+				<a onclick="addPerson();" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">人员新增</a> 
+				<a onclick="updatePerson();" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true">人员修改</a>
+				<a onclick="deletePerson();" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true">人员删除</a>
+			</div>
+		</div>
+		<div id="contextmenu" class="easyui-menu" style="width: 120px;">
+			<div onclick="addCatetory(1);" data-options="iconCls:'icon-add'">新增子分类</div>
+			<div onclick="updateCatetory();" data-options="iconCls:'icon-edit'">修改</div>
+			<div onclick="delCatetory();" data-options="iconCls:'icon-remove'">删除</div>
+		</div>
+	</div>
+</html>

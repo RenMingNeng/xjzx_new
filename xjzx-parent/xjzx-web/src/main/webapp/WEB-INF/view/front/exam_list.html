@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery.min.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script>
+<script type="text/javascript">
+   function openOrganDetail(title,id){
+	   layer.open({
+		   type: 2,
+		   title: title,
+		   shadeClose: true,
+		   shade: 0.8,
+		   area: ['380px', '40%'],
+		   content: '${webPath}/exam/detail.htm?id='+id
+		 }); 
+   }
+</script>
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+         <div class="location">您当前位置： ${title}</div>
+           <#if (examOrganList?exists)&&(examOrganList?size>0)>
+             <div class="focus-details" id="prArea">
+                <#list examOrganList as result>
+                   <div class="normal-title"><h1>${result.cityName}</h1></div>
+                   <hr/>
+                   <div>
+					<#if (result.tranOrgans?exists)&&(result.tranOrgans?size>0)>
+					<table class="organ-name-wrap">
+                             <#list result.tranOrgans as organ>
+                                <#if organ_index==0>
+	                               <tr>
+	                                 <td  onclick="openOrganDetail('${organ.name!''}',${organ.id});" style="cursor: pointer;">${organ.name!''} </td>
+	                                 <#else>
+	                                  <#if organ_index%3==0>
+	                                     </tr>
+		  								  <tr>
+		  								   <td onclick="openOrganDetail('${organ.name!''}',${organ.id});" style="cursor: pointer;">${organ.name!''} </td>
+		  								  <#else>
+		  								  <td onclick="openOrganDetail('${organ.name!''}',${organ.id});" style="cursor: pointer;">${organ.name!''}</td>
+	                                  </#if>
+	                             </#if>
+                                 <#if !organ_has_next>  
+                                  </tr>
+                                 </#if>  
+                             </#list>
+                      	  </table>
+					</#if>
+				</div>
+                </#list>
+             </div>
+           </#if>
+     </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>

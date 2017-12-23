@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>角色明细</title>
+<link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${webPath}/widgets/easyui1.3.6/themes/icon.css" />
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/commons.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/easyui1.3.6/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="${webPath}/widgets/jquery/ajaxUpload.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="${webPath}/widgets/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript">
+       var param = EasyUIExt.myOpener.param,ue;
+       jQuery(function(){
+    	    ue = UE.getEditor('form-info',{ 
+    		   autoHeightEnabled:false,
+    	   });
+    	    EasyUIExt.initForm(param);
+    	   var url = "${webPath}/system/organ/addOrgan.htm";
+    	   if(param.type=="update"){
+    		   url = "${webPath}/system/organ/updateOrgan.htm";
+    		   $("#form-areas").combobox("setValue",param.entity.area.id);
+    	   }
+    	   jQuery("#myForm").form({
+   			url : url,
+			dataType:"json",
+			onSubmit:function(){
+				index = top.layer.load(1, {
+				    shade: [0.5,'#000'] //0.1透明度的白色背景
+				});
+			},
+			success:function(data){
+				top.layer.close(index);
+				var data = eval('(' + data + ')');
+				if(data.code=="success"){
+					top.layer.alert(data.msg, {icon: 1,skin: 'layer-ext-moon'});
+					param.success(EasyUIExt.myOpener.dialog,data);
+				}else{
+					top.layer.alert(data.msg, {icon: 2,skin: 'layer-ext-moon'});
+				}
+		    } 
+		});
+    		jQuery("#myForm").form("disableValidation");
+    		jQuery("#myForm").form("enableValidation");
+    		loadcombox();
+       });
+       function submitForm(){
+    	   $("#form-info").val(ue.getContent())
+    	   if(jQuery("#myForm").form("validate")){
+    		   jQuery("#myForm").submit();
+			}
+       }
+       function loadcombox(){
+   	    $.ajax({
+   		   type:"post",
+   		   url:"${webPath}/system/organ/dictByorgan.htm?dictCode=JGGS",
+   		   dataType:"json",
+   		   success:function(data){
+   			   //console.log(data.data);
+   			   var oprions = $("#form-areas").combobox("options");
+   			   oprions.valueField = "id";
+   			   oprions.textField = "dictName";
+   			   // 加载数据
+   			   $("#form-areas").combobox("loadData",data.data);
+   		   }
+   	   }); 
+      }
+       /* function loadcombotree(){
+    	  $("#form-areas").combotree({
+    		  url:"${webPath}/system/organ/dictByorgan.htm?dictCode=JGGS",
+    		  onBeforeLoad:function(node, param){
+    		   if(node){
+    			  return false;
+    		    }else{
+    			  return true;
+    			}
+    		  },
+    		  loadFilter:function(data){
+    			 return data.data;
+    		  }
+    	  })
+       } */
+    </script>
+</head>
+<body>
+   	<form id="myForm" method="post">
+  	 <input id="form-id" type="hidden" name="id" value="0"/>
+  	 <input id="form-categoryid" type="hidden" name="type" value="1"/>
+  	  <input id="form-state" type="hidden" name="state" value="1"/>
+  	 <table class="form-table">
+  	 	<tr>
+  	 		<td class="form-label">机构名称</td>
+  	 		<td class="form-input">
+  	 			<input id="form-name" name="name" class="easyui-validatebox" data-options="required:true,validType:'upperCase'" style="width: 145px;"/>
+  	 		</td>
+  	 		<td class="form-label">地址</td>
+  	 		<td class="form-input">
+  	 			<input id="form-address" class="easyui-validatebox" name="address" data-options="required:true" style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">联系人</td>
+  	 		<td class="form-input">
+  	 		  <input id="form-contacts" class="easyui-validatebox" name="contacts"  style="width: 145px;"/>
+  	 		</td>
+  	 		<td class="form-label">联系电话</td>
+  	 		<td class="form-input">
+  	 		   <input id="form-tel" class="easyui-validatebox" name="tel"  style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">所属地</td>
+  	 		<td class="form-input"  >
+  	 		   <input id="form-areas" class="easyui-combobox"  name="area.id" data-options="required:true,editable:false"  style="width: 145px;"/>
+  	 		</td>
+  	 		<td class="form-label">网址</td>
+  	 		<td class="form-input"  >
+  	 		   <input id="form-website" class="easyui-validatebox"  name="website"   style="width: 145px;"/>
+  	 		</td>
+  	 	</tr>
+  	 	<tr>
+  	 		<td class="form-label">简介</td>
+  	 		<td class="form-input" colspan="3">
+  	 		    <textarea id="form-info"  name="info" style="width:780px;height: 200px;"></textarea>
+  	 		</td>
+  	 	</tr>
+  	 	
+  	 </table>
+ 	 </form>
+ 	<div class="dialog-button">
+   	<a onclick="submitForm();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-ok'">确定</a>
+ 		<a onclick="EasyUIExt.closeDialog();" class="easyui-linkbutton" href="javascript:void(0);" data-options="plain:false,iconCls:'icon-cancel'">取消</a>     
+   </div>
+</body>
+</html>

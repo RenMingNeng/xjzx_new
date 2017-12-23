@@ -1,0 +1,67 @@
+#slider-wrap{width:750px; height:145px; border:1px solid #ccc; overflow:hidden}
+
+#slider-wrap .slider-title{ width: 60px; height:100%; background:#f0f0f0; font-size:25px; position:relative;}
+#slider-wrap .slider-title-small{ width: 30px; height:100%; background:#f0f0f0; position:relative}
+#slider-wrap .slider-title a, #slider-wrap .slider-title-small a{ display: inline-block; width:25px; color:#333; position:absolute;}
+#slider-wrap .slider-title-small a{top:50px; right:2px}
+#slider-wrap .slider-title a{ top: 5px; left:15px;}
+
+#slider-wrap .carousel {
+    float: left;
+	margin-left:20px;
+    /* Needed for rendering without flicker */
+    position: relative;
+    visibility: hidden;
+
+    left: -5000px;
+}
+
+    /* Styling for image based carousel content. Only width and height are mandatory */
+    #slider-wrap .carousel ul li img {
+        width: 80px;
+        height: 107px;
+        vertical-align:middle;
+		display:block;
+        /* optional */
+        margin: 5px 10px 0 20px;
+    }
+.carousel ul li span{margin-left:0px}
+
+/* Styles for PREV and NEXT anchor buttons */
+#slider-wrap a.prev, #slider-wrap a.next, #slider-wrap a.go {
+    display: block;
+    width: 26px;
+    height: 30px;
+    line-height: 1;
+    color: #666;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 80px;
+    float: left;
+}
+    #slider-wrap a.prev.disabled, #slider-wrap a.next.disabled,
+    #slider-wrap a.prev.disabled:hover, #slider-wrap a.next.disabled:hover {
+        background-color: #8d8d8d;
+        cursor: default;
+    }
+    #slider-wrap a.go.highlight {
+        background-color: #dedede;
+        color: #000;
+    }
+    #slider-wrap a.prev {
+        margin: 30px -5px 0 10px;
+        text-indent: 7px;
+    }
+    #slider-wrap a.next {
+        margin: 30px 0 0 10px;
+        text-indent: 10px;
+    }
+        #slider-wrap a.prev:hover, #slider-wrap a.next:hover, #slider-wrap a.go:hover {
+
+        }
+
+/* Other common styles */
+
+.clear {
+    clear: both;
+}

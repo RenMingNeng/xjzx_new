@@ -1,0 +1,307 @@
+.icon-blank{
+	background:url('icons/blank.gif') no-repeat center center;
+}
+.icon-add{
+	background:url('icons/new.png') no-repeat center center;
+}
+.icon-edit{
+	background:url('icons/edit.png') no-repeat center center;
+}
+.icon-remove{
+	background:url('icons/delete.png') no-repeat center center;
+}
+.icon-save{
+	background:url('icons/filesave.png') no-repeat center center;
+}
+.icon-cut{
+	background:url('icons/cut.png') no-repeat center center;
+}
+.icon-ok{
+	background:url('icons/ok.png') no-repeat center center;
+}
+.icon-no{
+	background:url('icons/no.png') no-repeat center center;
+}
+.icon-cancel{
+	background:url('icons/cancel.png') no-repeat center center;
+}
+.icon-reload{
+	background:url('icons/reload.png') no-repeat center center;
+}
+.icon-search{
+	background:url('icons/search.png') no-repeat center center;
+}
+.icon-print{
+	background:url('icons/print.png') no-repeat center center;
+}
+.icon-help{
+	background:url('icons/help.png') no-repeat center center;
+}
+.icon-undo{
+	background:url('icons/undo.png') no-repeat center center;
+}
+.icon-redo{
+	background:url('icons/redo.png') no-repeat center center;
+}
+.icon-back{
+	background:url('icons/back.png') no-repeat center center;
+}
+.icon-sum{
+	background:url('icons/sum.png') no-repeat center center;
+}
+.icon-tip{
+	background:url('icons/tip.png') no-repeat center center;
+}
+.icon-filter{
+	background:url('icons/filter.png') no-repeat center center;
+}
+
+
+.icon-mini-add{
+	background:url('icons/mini_add.png') no-repeat center center;
+}
+.icon-mini-edit{
+	background:url('icons/mini_edit.png') no-repeat center center;
+}
+.icon-mini-refresh{
+	background:url('icons/mini_refresh.png') no-repeat center center;
+}
+
+.icon-large-picture{
+	background:url('icons/large_picture.png') no-repeat center center;
+}
+.icon-large-clipart{
+	background:url('icons/large_clipart.png') no-repeat center center;
+}
+.icon-large-shapes{
+	background:url('icons/large_shapes.png') no-repeat center center;
+}
+.icon-large-smartart{
+	background:url('icons/large_smartart.png') no-repeat center center;
+}
+.icon-large-chart{
+	background:url('icons/large_chart.png') no-repeat center center;
+}
+
+.icon-wjj{
+	background:url('icons/wjj.gif') no-repeat center !important;
+}
+.icon-school-h{
+	background:url('icons/school-h.gif') no-repeat center center !important;
+}
+.icon-school-b{
+	background:url('icons/school-b.gif') no-repeat center center !important;
+}
+.icon-school-base{
+	background:url('icons/school-base.gif') no-repeat center center;
+}
+.icon-school-img{
+	background:url('icons/school-img.gif') no-repeat center center;
+}
+.icon-school-adv{
+	background:url('icons/school-adv.gif') no-repeat center center;
+}
+.icon-school-jl{
+	background:url('icons/school-jl.png') no-repeat center center;
+}
+.icon-upload{
+	background:url('icons/upload.png') no-repeat center center;
+}
+.icon-download{
+	background:url('icons/download.png') no-repeat center center;
+}
+.icon-cksg{
+	background:url('icons/cksg.png') no-repeat center center;
+}
+.icon-ckjb{
+	background:url('icons/ckjb.png') no-repeat center center;
+}
+.icon-clear{
+	background:url('icons/clear.png') no-repeat center center;
+}
+.icon-nlpg{
+	background:url('icons/nlpg.png') no-repeat center center;
+}
+.icon-dangan{
+	background:url('icons/dangan.png') no-repeat center center;
+}
+.icon-ckls{
+	background:url('icons/list.png') no-repeat center center;
+}
+.icon-userinfo{
+	background:url('icons/userinfo.png') no-repeat center center;
+}
+.icon-smil{
+	background:url('icons/smil.png') no-repeat center center;
+}
+.icon-cash{
+	background:url('icons/cash.png') no-repeat center center;
+}
+.icon-monitor{
+	background:url('icons/monitor.png') no-repeat center center;
+}
+.icon-calc{
+	background:url('icons/calc.png') no-repeat center center;
+}
+.icon-plus{
+	background:url('icons/plus.png') no-repeat center center;
+}
+.icon-minus{
+	background:url('icons/minus.png') no-repeat center center;
+}
+.icon-star{
+	background:url('icons/star.png') no-repeat center center;
+}
+.icon-huli{
+	background:url('icons/huli.png') no-repeat center center;
+}
+.icon-house{
+	background:url('icons/house.png') no-repeat center center;
+}
+.icon-floor{
+	background:url('icons/floor.png') no-repeat center center;
+}
+.icon-bed{
+	background:url('icons/bed.png') no-repeat center center;
+}
+.icon-xgzl{
+	background:url('icons/xgzl.png') no-repeat center center;
+}
+.icon-hl{
+	background:url('icons/hl.png') no-repeat center center;
+}
+.icon-next{
+	background:url('icons/next.png') no-repeat center center;
+}
+.icon-previous{
+	background:url('icons/previous.png') no-repeat center center;
+}
+.icon-forward{
+	background:url('icons/forward.png') no-repeat center center;
+}
+.icon-backward{
+	background:url('icons/backward.png') no-repeat center center;
+}
+*{
+	margin : 0px;
+	padding : 0px;
+}
+body{
+	overflow:hidden;
+}
+.dialog-button{
+	width:100%;
+	padding:5px 0px;
+	margin:0px;
+	overflow: hidden;
+	text-align: center !important;
+	position: absolute;
+	background-color:#ADD1FC;
+	bottom: 0;
+}
+
+/*============================ form ============================*/
+.form-table {
+	width:100%;
+	border:0px;
+	border-collapse:collapse;
+	overflow:hidden;
+}
+.form-label{
+	font-size: 13px;
+	color: #656565;
+	background-color: #f0f0f0;
+	font-weight: 700;
+	text-align: right;
+	padding-right:10px;
+	height: 35px;
+	border:1px solid #d0d0d0;
+}
+.form-input{
+	padding-left: 5px;
+	border:1px solid #d0d0d0;
+}
+.form-table textarea{
+	width : 210px;
+	height : 75px;
+	border: 1px solid #95B8E7;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+
+.form-table .input-clear input[type="text"] , .form-table .input-clear input[type="password"]{
+	width : auto;
+	height: auto;
+	border : none;
+	background :none;
+}
+
+.form-table input[readonly]{
+	background: #eee;
+	color: #555;
+}
+.form-table textarea[readonly]{
+	background: #eee;
+	color: #555;
+}
+.form-table textarea{
+	font-size: 13px;
+}
+.form-table a {
+	text-decoration: none;
+	vertical-align: middle;
+}
+
+.form-table input{
+	display: inline-block;
+	background-color: white;
+	border: 1px solid #95B8E7;
+	padding: 0px 2px 0px 2px;
+	height: 20px;
+}
+/*============================ search ============================*/
+.search-toolbar{
+	border-bottom:#dddddd solid 1px;
+	height:auto;
+	padding: 2px;
+	display: none;
+}
+
+.search-toolbar table{
+	font-size: 13px;
+}
+
+.search-toolbar .search-label{
+	display: inline-block;
+	min-width: 50px;
+	text-align: right;
+}
+
+.search-toolbar .search-input{
+	display: inline-block;
+	vertical-align: center;
+	text-align:left;
+	padding:5px 5px;
+}
+
+.search-toolbar input{
+	display: inline-block;
+	background-color: white;
+	border: 1px solid #95B8E7;
+	padding: 0px 2px 0px 2px;
+	height: 20px;
+}
+
+input[readonly]{
+	background: #EEE;
+	color: #555;
+}
+
+input[class~=combo-text]{
+	background: white;
+}
+
+.search-toolbar .btnDiv{
+	border-top: 1px solid #ddd;
+}

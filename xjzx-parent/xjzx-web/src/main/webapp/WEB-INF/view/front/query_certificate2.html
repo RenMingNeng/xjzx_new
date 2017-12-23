@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>湖北省安全生产宣传教育中心</title>
+<link rel="shortcut icon" type="image/x-icon" href="${webPath}/resource/front/images/v2/favicon.ico" media="screen">
+<link href="${webPath}/resource/front/css/v2/master.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${webPath}/resource/front/css/v2/index.css">
+<link href="${webPath}/resource/front/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/globle.css" rel="stylesheet" type="text/css"/>
+<link href="${webPath}/resource/front/css/style.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${webPath}/resource/front/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="${webPath}/widgets/layer/layer.js"></script> 
+<script type="text/javascript">
+$(document).keyup(function(event){
+  if(event.keyCode ==13){
+	  submit();
+  }
+});
+function submit(){
+	var certiinput = $("#certiinput").val();
+	if("" == certiinput){
+		layer.alert('证件号不能为空!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	  }
+	if(15 > certiinput.length ){
+		layer.alert('请输入正确的证件号!', {icon: 2,skin: 'layer-ext-moon'});
+		return;
+	}
+	 $("#myForm").submit();
+}
+</script>
+</head>
+<body>
+  <div class="wrap">
+     ${httpInclude.include("/top.htm")}
+     <div class="content">
+         <div class="location">您当前位置： 其他证件查询</div>
+         <div class="focus-details" id="prArea">
+            <form method="post" action="${webPath}/certificate/query.htm" id="myForm" >
+				<div class="center-line">
+					<div class="center-con-div left-500"><img src="${webPath}/resource/front/images/search-img.png"/><span>证件查询</span></div>
+				</div>
+				<div style="height:120px;">
+					<div class="search-box-wrap" style="text-align: center;">
+						<div class="search-area">
+							<input id="certiinput" placeholder="请输入证件号" name="cardNumber" /> <a class="block-a-btn cetisearch-btn" href="javaScript:submit();">搜索</a>
+						</div>
+					</div>
+					<div class="certitype">
+						<!-- <p><input type="radio" checked="checked" name="types" value="teachercard" disabled="disabled"><label>安全生产培训教师资格证</label></p>
+						<p><input type="radio" name="types" value="safetymanageCard"><label>生产经营单位安全生产管理人员安全资格证书</label></p> -->
+						<p><input type="radio" checked="checked" name="types" value="safetymanageCardNew"><label>生产经营单位主要负责人安全管理人员安全安全生产知识和管理能力考核合格证<em style="color:#ff0000">(请输入身份证号码查询)</em></label></p>
+					</div>
+                                       <div style="margin-top:20px;margin-left:80px;font-size:14px;text-align:center;">
+                                              由于近期网络服务不稳定,给用户带来不便。中心将尽力减少给用户造成的损失和影响。联系电话：027-87812940
+                                       </div>
+				</div>
+		 </form>
+		 <div class="mgt-80">
+			<div class="head-title"><h1><span></span>证件样式</h1></div>
+			<div class="small-img-wrap width-700">
+				<ul class="mgt-10">
+					<li><img src="${webPath}/resource/front/images/zs_ag_1.jpg" title="安管合格证"/></li>
+					<li><img src="${webPath}/resource/front/images/zs_ag_2.jpg" title="安管合格证"/></li>
+				</ul>
+			</div>
+			<div class="clear"></div>
+		</div>
+       </div>
+     </div>
+      ${httpInclude.include("/foot.htm")}
+  </div>
+</body>
+</html>
