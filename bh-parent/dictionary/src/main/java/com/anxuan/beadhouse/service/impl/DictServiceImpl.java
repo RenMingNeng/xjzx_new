@@ -146,7 +146,7 @@ public class DictServiceImpl extends BaseServiceImpl<Dict> implements
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("dictCode", dictCode+"%");
 		param.put("pid", 18L);
-		String queryStr= "from Dict bean where bean.dictCode like :dictCode and bean.parent.id=:pid";
+		String queryStr= "from Dict bean where bean.dictCode like :dictCode and bean.parent.id>=:pid";
 		List<Dict> list = dictDao.find(queryStr, param, -1, -1);
     	return list;
 	}

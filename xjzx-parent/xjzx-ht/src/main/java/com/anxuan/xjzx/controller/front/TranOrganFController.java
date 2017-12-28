@@ -41,7 +41,7 @@ public class TranOrganFController {
 		params.put("areaid", dict.getId());
 		OrganResult result = new OrganResult();
 		result.setCityName(dict.getDictName());
-		result.setTranOrgans(tranOrganService.find("from TranOrgan bean where bean.state=:state and bean.type=:type and bean.area.parent.id=:areaid", params, -1, -1));
+		result.setTranOrgans(tranOrganService.find("from TranOrgan bean where bean.state=:state and bean.type=:type and (bean.area.parent.id=:areaid or bean.area.id=:areaid)", params, -1, -1));
 		organResultList.add(result);
 	}
 	mav.addObject("title", "全省培训机构");

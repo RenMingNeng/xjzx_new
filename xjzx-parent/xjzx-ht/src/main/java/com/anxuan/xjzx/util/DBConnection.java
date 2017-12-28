@@ -15,7 +15,7 @@ public class DBConnection
     {
       Class.forName(driver);
       //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/xjzx_new_test?useUnicode=true&amp;characterEncoding=utf-8", "root", "asd2011!#%246");
-      conn = DriverManager.getConnection("jdbc:mysql://10.36.1.74:3306/xjzx_new_test?useUnicode=true&amp;characterEncoding=utf-8", "root", "123456");
+      conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/xjzx_new_test?useUnicode=true&amp;characterEncoding=utf-8", "root", "123456");
       conn.setAutoCommit(false);
     }
     catch (SQLException e)
